@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Clione.Utility;
 using UnityEngine;
 
 namespace Clione
@@ -7,87 +8,62 @@ namespace Clione
     /// <summary>
     /// シーンを読み込む
     /// </summary>
-    public class SceneLoader
+    public class SceneLoader : Singleton<SceneLoader>
     {
         private const string GameObjectName = "[Clione Dispacher]";
 
-        public static event Action BeginOpenWindowAction;
+        private MonoBehaviour _monoBehaviour;
 
-        public static event Action EndOpenWindowAction;
-
-        public static event Action BeginCloseWindowAction;
-
-        public static event Action EndCloseWindowAction;
-
-        public static event Action BeginOpenScreenAction;
-
-        public static event Action EndOpenScreenAction;
-
-        public static event Action BeginCloseScreenAction;
-
-        public static event Action EndCloseScreenAction;
-
-        private static SceneLoader _instance;
-
-        private static MonoBehaviour _monoBehaviour;
-
-        private static SceneManager _sceneManager;
+        private SceneManager _sceneManager;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public SceneLoader(SceneManager sceneManager = null)
+        public void Initialize(SceneManager sceneManager = null)
         {
             if (!GameObject.Find(GameObjectName))
             {
                 var gameObject = new GameObject {name = GameObjectName};
                 GameObject.DontDestroyOnLoad(gameObject);
+                gameObject.AddComponent<ClioneDispatcher>();
                 _monoBehaviour = gameObject.GetComponent<MonoBehaviour>();
             }
 
+            SceneManager manager;
+
             if (sceneManager == null)
             {
-                _sceneManager = new SceneManager(_monoBehaviour);
+                manager = new SceneManager(_monoBehaviour);
+            }
+            else
+            {
+                manager = sceneManager;
             }
 
-            _sceneManager = sceneManager;
-            SetEvent();
-            _instance = this;
+            _sceneManager = manager;
+
+            _sceneManager.SceneInitialize();
         }
 
-        private void SetEvent()
-        {
-            _sceneManager.CurrentOpenScene.BeginOpenWindowAction += () => BeginOpenWindowAction?.Invoke();
-            _sceneManager.CurrentOpenScene.EndOpenWindowAction += () => EndOpenWindowAction?.Invoke();
-            _sceneManager.CurrentOpenScene.BeginCloseWindowAction += () => BeginCloseWindowAction?.Invoke();
-            _sceneManager.CurrentOpenScene.EndCloseWindowAction += () => EndCloseWindowAction?.Invoke();
+        public void LoadScene(string sceneName) => _monoBehaviour.StartCoroutine(LoadSceneEnumerator(sceneName));
 
-            _sceneManager.CurrentOpenWindow.BeginOpenScreenAction += () => BeginOpenScreenAction?.Invoke();
-            _sceneManager.CurrentOpenWindow.EndOpenScreenAction += () => EndOpenScreenAction?.Invoke();
-            _sceneManager.CurrentOpenWindow.BeginCloseScreenAction += () => BeginCloseScreenAction?.Invoke();
-            _sceneManager.CurrentOpenWindow.EndCloseScreenAction += () => EndCloseScreenAction?.Invoke();
-        }
+        public void LoadWindow(string windowPath, string screenPath) =>
+            _monoBehaviour.StartCoroutine(LoadWindowEnumerator(windowPath, screenPath));
 
-        /// <summary>
-        /// Scene を読み込む
-        /// </summary>
-        public static IEnumerator LoadScene(string sceneName)
+        public void LoadScreen(string screenPath) =>
+            _monoBehaviour.StartCoroutine(LoadScreenEnumerator(screenPath));
+
+        public IEnumerator LoadSceneEnumerator(string sceneName)
         {
             yield return _monoBehaviour.StartCoroutine(_sceneManager.LoadScene(sceneName));
         }
 
-        /// <summary>
-        /// Window と Screen を読み込む
-        /// </summary>
-        public static IEnumerator LoadWindow(string windowPath, string screenPath)
+        public IEnumerator LoadWindowEnumerator(string windowPath, string screenPath)
         {
             yield return _monoBehaviour.StartCoroutine(_sceneManager.LoadWindow(windowPath, screenPath));
         }
 
-        /// <summary>
-        /// Screen を読み込む
-        /// </summary>
-        public static IEnumerator LoadScreen(string screenPath)
+        public IEnumerator LoadScreenEnumerator(string screenPath)
         {
             yield return _monoBehaviour.StartCoroutine(_sceneManager.LoadScreen(screenPath));
         }
