@@ -8,13 +8,14 @@ namespace Clione
     /// </summary>
     public abstract class ScreenPresenterBase : MonoBehaviour
     {
+        public string ScreenPath { get; private set; }
+
+        public void SetScreenPath(string path) => ScreenPath = path;
+
         /// <summary>
         /// 初期化
         /// </summary>
-        public virtual void Initialize()
-        {
-            StartCoroutine(InitializeEnumerator());
-        }
+        public virtual void Initialize() => StartCoroutine(InitializeEnumerator());
 
         /// <summary>
         /// 非同期用の初期化

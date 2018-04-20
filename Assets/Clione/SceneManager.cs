@@ -9,31 +9,22 @@ namespace Clione
     /// </summary>
     public class SceneManager
     {
-        /// <summary>
-        /// Model
-        /// </summary>
-        private readonly SceneManagerModel _model;
-
-        public ScenePresenterBase CurrentOpenScene { get; private set; }
-
-        public WindowPresenterBase CurrentOpenWindow => CurrentOpenScene.CurrentOpenWindow;
-
-        public ScreenPresenterBase CurrentOpenScreen => CurrentOpenWindow.CurrentOpenScreen;
+        private ScenePresenterBase _currentOpenScene = null;
 
         /// <summary>
         /// 現在開かれている Scene 名
         /// </summary>
-        private string CurrentSceneName => _model.CurrentSceneName;
+        private static string CurrentSceneName => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
         /// <summary>
         /// 現在開かれている Window のパス
         /// </summary>
-        private string CurrentWindowPath => _model.CurrentWindowPath;
+        private string CurrentWindowPath => _currentOpenScene?.CurrentOpenWindowPath ?? string.Empty;
 
         /// <summary>
         /// 現在開かれている Screen のパス
         /// </summary>
-        private string CurrentScreenPath => _model.CurrentScreenPath;
+        private string CurrentScreenPath => _currentOpenScene?.CurrentOpenScreenPath ?? string.Empty;
 
         /// <summary>
         /// Sceneがロード中かどうか
@@ -44,19 +35,23 @@ namespace Clione
 
         public SceneManager(MonoBehaviour monoBehaviour)
         {
-            _model = new SceneManagerModel();
             _monoBehaviour = monoBehaviour;
+        }
+
+        public void SceneInitialize()
+        {
+            _monoBehaviour.StartCoroutine(SceneInitializeEnumerator());
         }
 
         /// <summary>
         /// シーンの初期化
         /// </summary>
-        public IEnumerator SceneInitialize()
+        public IEnumerator SceneInitializeEnumerator()
         {
-            var currentScene = GetCurrentScenePresenter();
-            currentScene.Initialize(null);
-            yield return _monoBehaviour.StartCoroutine(currentScene.InitializeEnumerator());
-            currentScene.InitializeOpenWindowAndScreen();
+            _currentOpenScene = GetCurrentScenePresenter();
+            _currentOpenScene.Initialize(null);
+            yield return _monoBehaviour.StartCoroutine(_currentOpenScene.InitializeEnumerator());
+            _currentOpenScene.InitializeOpenWindowAndScreen();
         }
 
         /// <summary>
@@ -64,14 +59,14 @@ namespace Clione
         /// </summary>
         public IEnumerator LoadScene(string loadSceneName, object param = null, Action onComplete = null)
         {
-            if (_model.CurrentSceneName != loadSceneName)
+            if (CurrentSceneName != loadSceneName)
             {
                 yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
                 Resources.UnloadUnusedAssets();
                 GC.Collect();
-                var loadScenePresenter = GetCurrentScenePresenter();
-                loadScenePresenter.Initialize(param);
-                loadScenePresenter.InitializeOpenWindowAndScreen();
+                _currentOpenScene = GetCurrentScenePresenter();
+                _currentOpenScene.Initialize(param);
+                _currentOpenScene.InitializeOpenWindowAndScreen();
             }
 
             onComplete?.Invoke();
@@ -110,34 +105,33 @@ namespace Clione
             yield return new WaitUntil(() => !IsLoadingScene);
             IsLoadingScene = true;
 
-            ScenePresenterBase loadScenePresenter = GetCurrentScenePresenter();
+            _currentOpenScene = GetCurrentScenePresenter();
 
-            if (_model.CurrentSceneName != loadSceneName)
+            if (CurrentSceneName != loadSceneName)
             {
                 yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
                 Resources.UnloadUnusedAssets();
                 GC.Collect();
-                loadScenePresenter = GetCurrentScenePresenter();
-                loadScenePresenter.Initialize(param);
-                yield return _monoBehaviour.StartCoroutine(loadScenePresenter.InitializeEnumerator());
-                loadScenePresenter.InitializeOpenWindowAndScreen();
+                _currentOpenScene = GetCurrentScenePresenter();
+                _currentOpenScene.Initialize(param);
+                yield return _monoBehaviour.StartCoroutine(_currentOpenScene.InitializeEnumerator());
+                _currentOpenScene.InitializeOpenWindowAndScreen();
             }
 
-            if (_model.CurrentScreenPath != loadScreenPath)
+            if (CurrentWindowPath != loadWindowPath)
             {
-                yield return _monoBehaviour.StartCoroutine(loadScenePresenter.OnCloseScreenEnumerator());
+                yield return _monoBehaviour.StartCoroutine(_currentOpenScene.OnCloseScreenEnumerator());
+                yield return _monoBehaviour.StartCoroutine(_currentOpenScene.OnCloseWindowEnumerator());
             }
 
-            if (_model.CurrentWindowPath != loadWindowPath)
+            if (CurrentScreenPath != loadScreenPath)
             {
-                yield return _monoBehaviour.StartCoroutine(loadScenePresenter.OnCloseWindowEnumerator());
+                yield return _monoBehaviour.StartCoroutine(_currentOpenScene.OnCloseScreenEnumerator());
             }
 
             yield return _monoBehaviour.StartCoroutine(
-                loadScenePresenter.OnOpenWindowEnumerator(loadWindowPath, loadScreenPath, CurrentWindowPath,
+                _currentOpenScene.OnOpenWindowEnumerator(loadWindowPath, loadScreenPath, CurrentWindowPath,
                     CurrentScreenPath));
-            _model.SetCurrentWindowPath(loadWindowPath);
-            _model.SetCurrentScreenPath(loadScreenPath);
 
             onComplete?.Invoke();
             IsLoadingScene = false;
