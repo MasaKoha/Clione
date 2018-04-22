@@ -78,20 +78,19 @@ namespace Clione
         /// <summary>
         /// Window と Screen を読み込む
         /// </summary>
-        public IEnumerator LoadWindow(string loadWindowPath, string loadScreenPath, object param = null,
-            Action onComplete = null)
+        public IEnumerator LoadWindow(string loadWindowPath, string loadScreenPath, Action onComplete = null)
         {
             yield return _monoBehaviour.StartCoroutine(
-                LoadSceneEnumerator(CurrentSceneName, loadWindowPath, loadScreenPath, param, onComplete));
+                LoadSceneEnumerator(CurrentSceneName, loadWindowPath, loadScreenPath, null, onComplete));
         }
 
         /// <summary>
         /// Screen を読み込む
         /// </summary>
-        public IEnumerator LoadScreen(string loadScreenPath, object param = null, Action onComplete = null)
+        public IEnumerator LoadScreen(string loadScreenPath, Action onComplete = null)
         {
             yield return _monoBehaviour.StartCoroutine(LoadSceneEnumerator(CurrentSceneName, CurrentWindowPath,
-                loadScreenPath, param, onComplete));
+                loadScreenPath, null, onComplete));
         }
 
         /// <summary>

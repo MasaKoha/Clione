@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Clione.Utility;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Clione
 {
@@ -34,27 +36,28 @@ namespace Clione
             _sceneManager.SceneInitialize();
         }
 
-        public void LoadScene(string sceneName) => _monoBehaviour.StartCoroutine(LoadSceneEnumerator(sceneName));
+        public void LoadScene(string sceneName, object param = null, Action onComplete = null) =>
+            _monoBehaviour.StartCoroutine(LoadSceneEnumerator(sceneName, param, onComplete));
 
-        public void LoadWindow(string windowPath, string screenPath) =>
-            _monoBehaviour.StartCoroutine(LoadWindowEnumerator(windowPath, screenPath));
+        public void LoadWindow(string windowPath, string screenPath, Action onComplete = null) =>
+            _monoBehaviour.StartCoroutine(LoadWindowEnumerator(windowPath, screenPath, onComplete));
 
-        public void LoadScreen(string screenPath) =>
-            _monoBehaviour.StartCoroutine(LoadScreenEnumerator(screenPath));
+        public void LoadScreen(string screenPath, Action onComplete = null) =>
+            _monoBehaviour.StartCoroutine(LoadScreenEnumerator(screenPath, onComplete));
 
-        public IEnumerator LoadSceneEnumerator(string sceneName)
+        public IEnumerator LoadSceneEnumerator(string sceneName, object param = null, Action onComplete = null)
         {
-            yield return _monoBehaviour.StartCoroutine(_sceneManager.LoadScene(sceneName));
+            yield return _monoBehaviour.StartCoroutine(_sceneManager.LoadScene(sceneName, param, onComplete));
         }
 
-        public IEnumerator LoadWindowEnumerator(string windowPath, string screenPath)
+        public IEnumerator LoadWindowEnumerator(string windowPath, string screenPath, Action onComplete = null)
         {
-            yield return _monoBehaviour.StartCoroutine(_sceneManager.LoadWindow(windowPath, screenPath));
+            yield return _monoBehaviour.StartCoroutine(_sceneManager.LoadWindow(windowPath, screenPath, onComplete));
         }
 
-        public IEnumerator LoadScreenEnumerator(string screenPath)
+        public IEnumerator LoadScreenEnumerator(string screenPath, Action onComplete = null)
         {
-            yield return _monoBehaviour.StartCoroutine(_sceneManager.LoadScreen(screenPath));
+            yield return _monoBehaviour.StartCoroutine(_sceneManager.LoadScreen(screenPath, onComplete));
         }
     }
 }
