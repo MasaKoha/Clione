@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Clione.Utility;
 using UnityEngine;
 
@@ -10,38 +9,28 @@ namespace Clione
     /// </summary>
     public class SceneLoader : Singleton<SceneLoader>
     {
-        private const string GameObjectName = "[Clione Dispacher]";
+        private const string GameObjectName = "[Clione MainThread Dispacher]";
 
         private MonoBehaviour _monoBehaviour;
 
         private SceneManager _sceneManager;
 
+        public bool IsLoadingScene => _sceneManager.IsLoadingScene;
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public void Initialize(SceneManager sceneManager = null)
+        public void Initialize()
         {
             if (!GameObject.Find(GameObjectName))
             {
                 var gameObject = new GameObject {name = GameObjectName};
-                GameObject.DontDestroyOnLoad(gameObject);
+                Object.DontDestroyOnLoad(gameObject);
                 gameObject.AddComponent<ClioneDispatcher>();
                 _monoBehaviour = gameObject.GetComponent<MonoBehaviour>();
             }
 
-            SceneManager manager;
-
-            if (sceneManager == null)
-            {
-                manager = new SceneManager(_monoBehaviour);
-            }
-            else
-            {
-                manager = sceneManager;
-            }
-
-            _sceneManager = manager;
-
+            _sceneManager = new SceneManager(_monoBehaviour);
             _sceneManager.SceneInitialize();
         }
 
