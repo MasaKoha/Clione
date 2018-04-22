@@ -46,12 +46,9 @@ namespace Clione
         /// <summary>
         /// シーンの初期化
         /// </summary>
-        public IEnumerator SceneInitializeEnumerator()
+        public IEnumerator SceneInitializeEnumerator(object param = null)
         {
-            _currentOpenScene = GetCurrentScenePresenter();
-            _currentOpenScene.Initialize(null);
-            yield return _monoBehaviour.StartCoroutine(_currentOpenScene.InitializeEnumerator());
-            _currentOpenScene.InitializeOpenWindowAndScreen();
+            yield return _monoBehaviour.StartCoroutine(InitializeSceneEnumerator(param));
         }
 
         /// <summary>
@@ -64,12 +61,18 @@ namespace Clione
                 yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
                 Resources.UnloadUnusedAssets();
                 GC.Collect();
-                _currentOpenScene = GetCurrentScenePresenter();
-                _currentOpenScene.Initialize(param);
-                _currentOpenScene.InitializeOpenWindowAndScreen();
+                yield return _monoBehaviour.StartCoroutine(InitializeSceneEnumerator(param));
             }
 
             onComplete?.Invoke();
+        }
+
+        private IEnumerator InitializeSceneEnumerator(object param)
+        {
+            _currentOpenScene = GetCurrentScenePresenter();
+            _currentOpenScene.Initialize(param);
+            yield return _monoBehaviour.StartCoroutine(_currentOpenScene.InitializeEnumerator());
+            _currentOpenScene.InitializeOpenWindowAndScreen();
         }
 
         /// <summary>
@@ -142,6 +145,15 @@ namespace Clione
         /// </summary>
         private static ScenePresenterBase GetCurrentScenePresenter()
         {
+            var scenePresenterBase =
+                UnityEngine.Object.FindObjectOfType(typeof(ScenePresenterBase)) as ScenePresenterBase;
+
+            if (scenePresenterBase == null)
+            {
+                Debug.LogError("現在開いているシーンに ScenePresenterBase を継承した GameObject が存在しません。ヒエラルキー上を確認してください。");
+                return null;
+            }
+
             return UnityEngine.Object.FindObjectOfType(typeof(ScenePresenterBase)) as ScenePresenterBase;
         }
     }

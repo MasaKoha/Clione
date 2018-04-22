@@ -29,6 +29,8 @@ namespace Clione.Example
 
             _view.Window2ButtonClickedEvent.AddListener(() =>
                 OpenWindow(Scene1WindowType.Window2, Scene1ScreenType.Screen1));
+
+            _view.Scene2ButtonClickedEvent.AddListener(() => SceneLoader.Instance.LoadScene("Scene2"));
         }
 
         private static void OpenWindow(Scene1WindowType windowType, Scene1ScreenType screenType)

@@ -9,15 +9,13 @@ namespace Clione.Example
 
         [SerializeField] private Button _window2Button;
 
-        public Button.ButtonClickedEvent Window1ButtonClickedEvent
-        {
-            get { return _window1Button.onClick; }
-        }
+        [SerializeField] private Button _scene2Button;
 
-        public Button.ButtonClickedEvent Window2ButtonClickedEvent
-        {
-            get { return _window2Button.onClick; }
-        }
+        public Button.ButtonClickedEvent Window1ButtonClickedEvent => _window1Button.onClick;
+
+        public Button.ButtonClickedEvent Window2ButtonClickedEvent => _window2Button.onClick;
+
+        public Button.ButtonClickedEvent Scene2ButtonClickedEvent => _scene2Button.onClick;
 
         public void Initialize()
         {
