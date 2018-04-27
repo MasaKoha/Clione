@@ -35,8 +35,8 @@ namespace Clione.Example
 
         private static void OpenWindow(Scene1WindowType windowType, Scene1ScreenType screenType)
         {
-            string windowPath = TestResourcePrefabPath.GetWindowPath(windowType.ToString());
-            string screenPath = TestResourcePrefabPath.GetScreenPath(screenType.ToString());
+            string windowPath = ExampleResourcePrefabPath.GetWindowPath(windowType.ToString());
+            string screenPath = ExampleResourcePrefabPath.GetScreenPath(screenType.ToString());
             SceneLoader.Instance.LoadWindow(windowPath, screenPath);
         }
     }

@@ -19,7 +19,7 @@ namespace Clione.Example
 
         private static void MoveScreen(Scene1ScreenType type)
         {
-            SceneLoader.Instance.LoadScreen(TestResourcePrefabPath.GetScreenPath(type.ToString()));
+            SceneLoader.Instance.LoadScreen(ExampleResourcePrefabPath.GetScreenPath(type.ToString()));
         }
     }
 }
