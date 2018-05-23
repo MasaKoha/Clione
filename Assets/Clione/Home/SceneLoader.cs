@@ -20,10 +20,21 @@ namespace Clione
         public bool IsLoadingScene => _sceneManager.IsLoadingScene;
 
         /// <summary>
-        /// コンストラクタ
+        /// アプリケーションの初回起動時かどうか
+        /// </summary>
+        private bool _isFirstBoot = false;
+
+        /// <summary>
+        /// 初期化
+        /// アプリケーションの初期化時のみ叩かれる
         /// </summary>
         public void Initialize()
         {
+            if (_isFirstBoot)
+            {
+                return;
+            }
+
             if (!GameObject.Find(GameObjectName))
             {
                 var gameObject = new GameObject {name = GameObjectName};
@@ -34,6 +45,7 @@ namespace Clione
 
             _sceneManager = new SceneManager(_monoBehaviour);
             _sceneManager.SceneInitialize();
+            _isFirstBoot = true;
         }
 
         public void LoadScene(string sceneName, object param = null, Action onComplete = null) =>
