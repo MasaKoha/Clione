@@ -13,8 +13,9 @@ namespace Clione
 
         /// <summary>
         /// 現在開かれている Scene 名
+        /// ※マルチシーン非対応
         /// </summary>
-        private static string CurrentSceneName => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        public string CurrentSceneName => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
         /// <summary>
         /// 現在開かれている Window のパス
