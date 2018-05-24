@@ -20,6 +20,12 @@ namespace Clione
         public bool IsLoadingScene => _sceneManager.IsLoadingScene;
 
         /// <summary>
+        /// 現在開かれている Scene 名
+        /// ※マルチシーン非対応
+        /// </summary>
+        public string CurrentSceneName => _sceneManager.CurrentSceneName;
+
+        /// <summary>
         /// アプリケーションの初回起動時かどうか
         /// </summary>
         private bool _isFirstBoot = false;
