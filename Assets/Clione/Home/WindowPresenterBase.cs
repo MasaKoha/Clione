@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Clione.Home
@@ -20,12 +22,7 @@ namespace Clione.Home
         /// <summary>
         /// 現在開かれている Screen の GameObject
         /// </summary>
-        public GameObject CurrentOpenScreenPrefab { get; private set; }
-
-        public void SetNullScreenPrefab()
-        {
-            CurrentOpenScreenPrefab = null;
-        }
+        public Dictionary<string, GameObject> ScreenPrefabList = new Dictionary<string, GameObject>();
 
         public void SetWindowPath(string path) => WindowPath = path;
 
@@ -57,16 +54,18 @@ namespace Clione.Home
         /// </summary>
         public IEnumerator OnOpenWindowEnumerator(string nextScreenPath, string currentScreenPath)
         {
-            if (CurrentOpenScreenPrefab == null)
+            if (currentScreenPath != nextScreenPath)
             {
-                if (currentScreenPath != nextScreenPath)
+                if (!ScreenPrefabList.ContainsKey(nextScreenPath) || ScreenPrefabList[nextScreenPath] == null)
                 {
                     var prefab = Resources.Load<GameObject>(nextScreenPath);
-                    CurrentOpenScreenPrefab = Instantiate(prefab, this.transform);
-                    CurrentOpenScreen = CurrentOpenScreenPrefab.GetComponent<ScreenPresenterBase>();
-                    CurrentOpenScreen.SetScreenPath(nextScreenPath);
-                    CurrentOpenScreen.Initialize();
+                    ScreenPrefabList.Add(nextScreenPath, Instantiate(prefab, this.transform));
                 }
+
+                CurrentOpenScreen = ScreenPrefabList[nextScreenPath].GetComponent<ScreenPresenterBase>();
+                CurrentOpenScreen.gameObject.SetActive(true);
+                CurrentOpenScreen.SetScreenPath(nextScreenPath);
+                CurrentOpenScreen.Initialize();
             }
 
             yield return StartCoroutine(CurrentOpenScreen.OnBeforeOpenScreenEnumerator());
@@ -125,8 +124,7 @@ namespace Clione.Home
             yield return StartCoroutine(CurrentOpenScreen.OnBeforeCloseScreenEnumerator());
             yield return StartCoroutine(CurrentOpenScreen.OnCloseScreenEnumerator());
             yield return StartCoroutine(CurrentOpenScreen.OnAfterCloseScreenEnumerator());
-            DestroyImmediate(CurrentOpenScreenPrefab);
-            CurrentOpenScreenPrefab = null;
+            CurrentOpenScreen.gameObject.SetActive(false);
         }
     }
 }
