@@ -4,16 +4,15 @@ using UnityEngine;
 
 namespace Clione.Example
 {
-    public class DrillDownViewer1Presenter : DrillDownViewer
+    public class DrillDownViewer1Presenter : DrillDownViewerBase
     {
         [SerializeField] private DrillDownViewer1View _view;
 
         private SimpleMoveAnimation _simpleMoveAnimation;
 
-        public override void Initialize(object param)
+        protected override void OnInitialize(object param)
         {
             _view.Initialize();
-            base.Initialize(param);
             DrillDownViewRectTransform.anchoredPosition =
                 new Vector2(ViewWidth, DrillDownViewRectTransform.anchoredPosition.y);
             _simpleMoveAnimation = new SimpleMoveAnimation(this, DrillDownViewRectTransform);
@@ -22,10 +21,10 @@ namespace Clione.Example
 
         private void SetEvent()
         {
-            _view.BackButtonClickedEvent.AddListener(() => { DrillDownViewerManager.Instance.Back(); });
+            _view.BackButtonClickedEvent.AddListener(() => { Manager.Back(); });
             _view.NextButtonClickedEvent.AddListener(() =>
             {
-                DrillDownViewerManager.Instance.Show(
+                Manager.Show(
                     ExampleResourcePrefabPath.GetDrillDownViewerPath("DrillDownViewer1"),
                     null);
             });

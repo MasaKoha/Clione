@@ -10,17 +10,18 @@ namespace Clione.Example
 
         [SerializeField] private Button _showDrillViewButton;
 
+        private DrillDownViewerManager _manager;
+
         private void Start()
         {
-            DrillDownViewerManager.Instance.Initialize(_drillViewParent);
+            _manager = new DrillDownViewerManager(_drillViewParent);
             SetEvent();
         }
 
         private void SetEvent()
         {
             _showDrillViewButton.onClick.AddListener(() =>
-                DrillDownViewerManager.Instance.Show(ExampleResourcePrefabPath.GetDrillDownViewerPath("DrillDownViewer1"),
-                    null));
+                _manager.Show(ExampleResourcePrefabPath.GetDrillDownViewerPath("DrillDownViewer1"), null));
         }
     }
 }

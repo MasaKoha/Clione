@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace Clione.DrillDown
 {
-    public class DrillDownViewerManager : Singleton<DrillDownViewerManager>
+    public class DrillDownViewerManager
     {
         private readonly Stack<IDrillDownViewer> _iDrillDownViewerStack = new Stack<IDrillDownViewer>();
 
-        private Transform _parent;
+        private readonly Transform _parent;
 
-        public void Initialize(Transform parent)
+        public DrillDownViewerManager(Transform parent)
         {
             _parent = parent;
         }
@@ -27,7 +27,7 @@ namespace Clione.DrillDown
             }
 
             _iDrillDownViewerStack.Push(iDrillDownViewer);
-            iDrillDownViewer.Initialize(param);
+            iDrillDownViewer.Initialize(param, this);
             iDrillDownViewer.Show();
         }
 
