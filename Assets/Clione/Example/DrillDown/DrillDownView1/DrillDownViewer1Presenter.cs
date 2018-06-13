@@ -21,22 +21,22 @@ namespace Clione.Example
 
         private void SetEvent()
         {
-            _view.BackButtonClickedEvent.AddListener(() => { Manager.Back(); });
+            _view.BackButtonClickedEvent.AddListener(() => { DrillDownManager.Back(); });
             _view.NextButtonClickedEvent.AddListener(() =>
             {
-                Manager.Show(
+                DrillDownManager.Show(
                     ExampleResourcePrefabPath.GetDrillDownViewerPath("DrillDownViewer1"),
                     null);
             });
         }
 
-        public override void Show()
+        protected override void OnShow()
         {
             this.gameObject.SetActive(true);
             _simpleMoveAnimation.MoveX(0);
         }
 
-        public override void Next(bool isDig)
+        protected override void OnNext(bool isDig)
         {
             _simpleMoveAnimation.MoveX(-ViewWidth * (isDig ? 1 : -1), 0.3f, () =>
             {

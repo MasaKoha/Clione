@@ -2,7 +2,7 @@
 {
     public interface IDrillDownViewer
     {
-        DrillDownViewerManager Manager { get; }
+        DrillDownViewerManager DrillDownManager { get; }
         void Initialize(object param, DrillDownViewerManager manager);
         void Show();
         void Next(bool isDig);

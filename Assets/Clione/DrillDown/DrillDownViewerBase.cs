@@ -9,11 +9,11 @@ namespace Clione.DrillDown
 
         protected float ViewWidth;
 
-        public DrillDownViewerManager Manager { get; private set; }
+        public DrillDownViewerManager DrillDownManager { get; private set; }
 
         public virtual void Initialize(object param, DrillDownViewerManager manager)
         {
-            Manager = manager;
+            DrillDownManager = manager;
             DrillDownViewRectTransform = this.GetComponent<RectTransform>();
             ViewWidth = DrillDownViewRectTransform.rect.width;
             OnInitialize(param);
@@ -21,8 +21,18 @@ namespace Clione.DrillDown
 
         protected abstract void OnInitialize(object param);
 
-        public abstract void Show();
+        public void Show()
+        {
+            OnShow();
+        }
 
-        public abstract void Next(bool isDig);
+        protected abstract void OnShow();
+
+        public void Next(bool isDig)
+        {
+            OnNext(isDig);
+        }
+
+        protected abstract void OnNext(bool isDig);
     }
 }
