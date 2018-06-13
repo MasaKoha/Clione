@@ -3,17 +3,23 @@
 namespace Clione.DrillDown
 {
     [RequireComponent(typeof(RectTransform))]
-    public abstract class DrillDownViewer : MonoBehaviour, IDrillDownViewer
+    public abstract class DrillDownViewerBase : MonoBehaviour, IDrillDownViewer
     {
         protected RectTransform DrillDownViewRectTransform;
 
         protected float ViewWidth;
 
-        public virtual void Initialize(object param)
+        public DrillDownViewerManager Manager { get; private set; }
+
+        public virtual void Initialize(object param, DrillDownViewerManager manager)
         {
+            Manager = manager;
             DrillDownViewRectTransform = this.GetComponent<RectTransform>();
             ViewWidth = DrillDownViewRectTransform.rect.width;
+            OnInitialize(param);
         }
+
+        protected abstract void OnInitialize(object param);
 
         public abstract void Show();
 
