@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Clione
+namespace Clione.Home
 {
     /// <summary>
     /// ScreenPresenter のベースクラス

@@ -1,20 +1,13 @@
 ﻿using Clione.Home;
+using UnityEngine;
 
 namespace Clione.Example
 {
-    public class HomeExampleMain : ScenePresenterBase
+    public class StartSceneMain : MonoBehaviour
     {
         private void Start()
         {
             SceneLoader.Initialize(new ClioneSceneManager());
-        }
-
-        public override void Initialize(object param)
-        {
-        }
-
-        public override void InitializeOpenWindowAndScreen()
-        {
             SceneLoader.LoadScene("OutGame");
         }
     }

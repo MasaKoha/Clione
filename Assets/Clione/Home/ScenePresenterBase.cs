@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
-namespace Clione
+namespace Clione.Home
 {
     /// <summary>
     /// Scene Presenter の Base クラス
