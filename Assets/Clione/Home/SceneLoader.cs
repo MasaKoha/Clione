@@ -11,8 +11,6 @@ namespace Clione.Home
     /// </summary>
     public static class SceneLoader
     {
-        private const string GameObjectName = "[Clione MainThread Dispacher]";
-
         private static ISceneManager _sceneManager;
 
         public static bool IsLoadingScene => _sceneManager.IsLoadingScene;
