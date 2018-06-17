@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Clione.Home;
+using UnityEngine;
 
 namespace Clione.Example
 {
@@ -17,7 +18,7 @@ namespace Clione.Example
             _view.OnClickedMoveScreenAction += MoveScreen;
             _view.OnClickedInGameButtonAction += () =>
             {
-                SceneLoader.Instance.LoadWindow(
+                SceneLoader.LoadWindow(
                     ExampleResourcePrefabPath.GetWindowPath(OutGameWindowType.PreBattleWindow.ToString()),
                     ExampleResourcePrefabPath.GetScreenPath(OutGameScreenType.PreBattleScreen.ToString())
                 );
@@ -26,7 +27,7 @@ namespace Clione.Example
 
         private static void MoveScreen(OutGameScreenType type)
         {
-            SceneLoader.Instance.LoadScreen(ExampleResourcePrefabPath.GetScreenPath(type.ToString()));
+            SceneLoader.LoadScreen(ExampleResourcePrefabPath.GetScreenPath(type.ToString()));
         }
     }
 }

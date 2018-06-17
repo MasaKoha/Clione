@@ -1,4 +1,6 @@
-﻿namespace Clione.Example
+﻿using Clione.Home;
+
+namespace Clione.Example
 {
     public class PreBattleScreenPresenter : OutGameScreenPresenterBase<PreBattleScreenView>
     {
@@ -10,7 +12,7 @@
 
         private void SetEvent()
         {
-            View.GameStartButtonClickedEvent.AddListener(() => { SceneLoader.Instance.LoadScene("InGame"); });
+            View.GameStartButtonClickedEvent.AddListener(() => { SceneLoader.LoadScene("InGame"); });
         }
     }
 }

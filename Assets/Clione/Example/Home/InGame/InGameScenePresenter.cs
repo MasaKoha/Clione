@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Clione.Home;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Clione.Example
@@ -9,7 +10,7 @@ namespace Clione.Example
 
         public override void Initialize(object param)
         {
-            _outGameButton.onClick.AddListener(() => SceneLoader.Instance.LoadScene("OutGame"));
+            _outGameButton.onClick.AddListener(() => SceneLoader.LoadScene("OutGame"));
         }
 
         public override void InitializeOpenWindowAndScreen()

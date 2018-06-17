@@ -1,4 +1,6 @@
-﻿namespace Clione.Example
+﻿using Clione.Home;
+
+namespace Clione.Example
 {
     public class OutGameScenePresenter : ScenePresenterBase
     {
@@ -15,7 +17,7 @@
         {
             string windowPath = ExampleResourcePrefabPath.GetWindowPath(windowType.ToString());
             string screenPath = ExampleResourcePrefabPath.GetScreenPath(screenType.ToString());
-            SceneLoader.Instance.LoadWindow(windowPath, screenPath);
+            SceneLoader.LoadWindow(windowPath, screenPath);
         }
     }
 }
