@@ -11,7 +11,7 @@ namespace Clione.Home
     /// </summary>
     public class ClioneSceneManager : ISceneManager
     {
-        private ScenePresenterBase _currentOpenScene = null;
+        private SceneBase _currentOpenScene = null;
 
         private const string GameObjectName = "[Clione MainThread Dispacher]";
 
@@ -63,18 +63,16 @@ namespace Clione.Home
                 yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
                 Resources.UnloadUnusedAssets();
                 GC.Collect();
-                yield return _mono.StartCoroutine(InitializeSceneEnumerator(param));
+                yield return _mono.StartCoroutine(InitializeScene(param));
             }
 
             onComplete?.Invoke();
         }
 
-        private IEnumerator InitializeSceneEnumerator(object param)
+        private IEnumerator InitializeScene(object param)
         {
             _currentOpenScene = GetCurrentScenePresenter();
-            _currentOpenScene.Initialize(param);
-            yield return _mono.StartCoroutine(_currentOpenScene.InitializeEnumerator());
-            _currentOpenScene.InitializeOpenWindowAndScreen();
+            yield return _mono.StartCoroutine(_currentOpenScene.Initialize(param));
         }
 
         /// <summary>
@@ -83,7 +81,7 @@ namespace Clione.Home
         public IEnumerator LoadWindow(string loadWindowPath, string loadScreenPath, Action onComplete = null)
         {
             yield return _mono.StartCoroutine(
-                LoadSceneEnumerator(CurrentSceneName, loadWindowPath, loadScreenPath, null, onComplete));
+                LoadScene(CurrentSceneName, loadWindowPath, loadScreenPath, null, onComplete));
         }
 
         /// <summary>
@@ -91,14 +89,14 @@ namespace Clione.Home
         /// </summary>
         public IEnumerator LoadScreen(string loadScreenPath, Action onComplete = null)
         {
-            yield return _mono.StartCoroutine(LoadSceneEnumerator(CurrentSceneName, CurrentWindowPath,
+            yield return _mono.StartCoroutine(LoadScene(CurrentSceneName, CurrentWindowPath,
                 loadScreenPath, null, onComplete));
         }
 
         /// <summary>
         /// Scene を読み込む
         /// </summary>
-        private IEnumerator LoadSceneEnumerator(string loadSceneName, string loadWindowPath, string loadScreenPath,
+        private IEnumerator LoadScene(string loadSceneName, string loadWindowPath, string loadScreenPath,
             object param, Action onComplete)
         {
             if (_isLoadingScene)
@@ -117,24 +115,22 @@ namespace Clione.Home
                 Resources.UnloadUnusedAssets();
                 GC.Collect();
                 _currentOpenScene = GetCurrentScenePresenter();
-                _currentOpenScene.Initialize(param);
-                yield return _mono.StartCoroutine(_currentOpenScene.InitializeEnumerator());
-                _currentOpenScene.InitializeOpenWindowAndScreen();
+                yield return _mono.StartCoroutine(_currentOpenScene.Initialize(param));
             }
 
             if (CurrentWindowPath != loadWindowPath)
             {
-                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreenEnumerator());
-                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseWindowEnumerator());
+                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreen());
+                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseWindow());
             }
 
             if (CurrentScreenPath != loadScreenPath)
             {
-                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreenEnumerator());
+                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreen());
             }
 
             yield return _mono.StartCoroutine(
-                _currentOpenScene.OnOpenWindowEnumerator(loadWindowPath, loadScreenPath, CurrentWindowPath,
+                _currentOpenScene.OnOpenWindow(loadWindowPath, loadScreenPath, CurrentWindowPath,
                     CurrentScreenPath));
 
             onComplete?.Invoke();
@@ -144,10 +140,10 @@ namespace Clione.Home
         /// <summary>
         /// 現在のシーンのPresenterを取得する
         /// </summary>
-        private static ScenePresenterBase GetCurrentScenePresenter()
+        private static SceneBase GetCurrentScenePresenter()
         {
             var scenePresenterBase =
-                UnityEngine.Object.FindObjectOfType(typeof(ScenePresenterBase)) as ScenePresenterBase;
+                UnityEngine.Object.FindObjectOfType(typeof(SceneBase)) as SceneBase;
 
             if (scenePresenterBase == null)
             {
@@ -155,7 +151,7 @@ namespace Clione.Home
                 return null;
             }
 
-            return UnityEngine.Object.FindObjectOfType(typeof(ScenePresenterBase)) as ScenePresenterBase;
+            return UnityEngine.Object.FindObjectOfType(typeof(SceneBase)) as SceneBase;
         }
     }
 }

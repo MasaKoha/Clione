@@ -4,9 +4,9 @@ using UnityEngine;
 namespace Clione.Home
 {
     /// <summary>
-    /// ScreenPresenter のベースクラス
+    /// Screen のベースクラス
     /// </summary>
-    public abstract class ScreenPresenterBase : MonoBehaviour
+    public abstract class ScreenBase : MonoBehaviour
     {
         public string ScreenPath { get; private set; }
 
@@ -15,12 +15,7 @@ namespace Clione.Home
         /// <summary>
         /// 初期化
         /// </summary>
-        public virtual void Initialize() => StartCoroutine(InitializeEnumerator());
-
-        /// <summary>
-        /// 非同期用の初期化
-        /// </summary>
-        protected virtual IEnumerator InitializeEnumerator()
+        public virtual IEnumerator Initialize()
         {
             yield break;
         }
@@ -30,7 +25,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を開く前の処理
         /// </summary>
-        public virtual IEnumerator OnBeforeOpenScreenEnumerator()
+        public virtual IEnumerator OnBeforeOpenScreen()
         {
             yield break;
         }
@@ -38,7 +33,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を開くときの処理
         /// </summary>
-        public virtual IEnumerator OnOpenScreenEnumerator()
+        public virtual IEnumerator OnOpenScreen()
         {
             yield break;
         }
@@ -46,7 +41,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen が開かれたあとの処理
         /// </summary>
-        public virtual IEnumerator OnAfterOpenScreenEnumerator()
+        public virtual IEnumerator OnAfterOpenScreen()
         {
             yield break;
         }
@@ -58,7 +53,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を閉じる前の処理
         /// </summary>
-        public virtual IEnumerator OnBeforeCloseScreenEnumerator()
+        public virtual IEnumerator OnBeforeCloseScreen()
         {
             yield break;
         }
@@ -66,7 +61,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を閉じたときの処理
         /// </summary>
-        public virtual IEnumerator OnCloseScreenEnumerator()
+        public virtual IEnumerator OnCloseScreen()
         {
             yield break;
         }
@@ -74,7 +69,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を閉じたあとの処理
         /// </summary>
-        public virtual IEnumerator OnAfterCloseScreenEnumerator()
+        public virtual IEnumerator OnAfterCloseScreen()
         {
             yield break;
         }

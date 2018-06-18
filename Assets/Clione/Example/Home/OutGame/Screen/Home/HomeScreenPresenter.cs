@@ -4,21 +4,22 @@ using UnityEngine;
 
 namespace Clione.Example
 {
-    public class HomeScreenPresenter : ScreenPresenterBase
+    public class HomeScreenPresenter : ScreenBase
     {
         [SerializeField] private HomeScreenView _view;
 
-        public override void Initialize()
+        public override IEnumerator Initialize()
         {
             _view.Initialize();
+            yield break;
         }
 
-        public override IEnumerator OnBeforeOpenScreenEnumerator()
+        public override IEnumerator OnBeforeOpenScreen()
         {
             yield break;
         }
 
-        public override IEnumerator OnBeforeCloseScreenEnumerator()
+        public override IEnumerator OnBeforeCloseScreen()
         {
             yield break;
         }

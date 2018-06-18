@@ -1,13 +1,14 @@
-﻿using Clione.Home;
+﻿using System.Collections;
+using Clione.Home;
 
 namespace Clione.Example
 {
-    public class PreBattleScreenPresenter : OutGameScreenPresenterBase<PreBattleScreenView>
+    public class PreBattleScreenPresenterPresenter : OutGameScreenPresenterBase<PreBattleScreenView>
     {
-        public override void Initialize()
+        public override IEnumerator Initialize()
         {
-            base.Initialize();
             SetEvent();
+            yield break;
         }
 
         private void SetEvent()

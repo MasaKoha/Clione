@@ -4,16 +4,17 @@ using UnityEngine;
 
 namespace Clione.Example
 {
-    public abstract class OutGameScreenPresenterBase<T> : ScreenPresenterBase where T : OutGameScreenViewBase
+    public abstract class OutGameScreenPresenterBase<T> : ScreenBase where T : OutGameScreenViewBase
     {
         [SerializeField] protected T View;
 
-        public override void Initialize()
+        public override IEnumerator Initialize()
         {
             View.Initialize();
+            yield break;
         }
 
-        public override IEnumerator OnBeforeOpenScreenEnumerator()
+        public override IEnumerator OnBeforeOpenScreen()
         {
             yield break;
         }

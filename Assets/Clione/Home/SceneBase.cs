@@ -4,9 +4,9 @@ using UnityEngine;
 namespace Clione.Home
 {
     /// <summary>
-    /// Scene Presenter の Base クラス
+    /// Scene の Base クラス
     /// </summary>
-    public abstract class ScenePresenterBase : MonoBehaviour
+    public abstract class SceneBase : MonoBehaviour
     {
         /// <summary>
         /// Window を生成するルートオブジェクトの Transform
@@ -16,7 +16,7 @@ namespace Clione.Home
         /// <summary>
         /// 現在開かれている Window
         /// </summary>
-        private WindowPresenterBase _currentOpenWindow;
+        private WindowBase _currentOpenWindow;
 
         public string CurrentOpenWindowPath => _currentOpenWindow?.WindowPath ?? string.Empty;
 
@@ -28,27 +28,17 @@ namespace Clione.Home
         private GameObject _currentWindowGameObject;
 
         /// <summary>
-        /// 初期化
-        /// </summary>
-        public abstract void Initialize(object param);
-
-        /// <summary>
         /// 非同期の初期化処理
         /// </summary>
-        public virtual IEnumerator InitializeEnumerator()
+        public virtual IEnumerator Initialize(object param)
         {
             yield break;
         }
 
         /// <summary>
-        /// 初期に開く画面
-        /// </summary>
-        public abstract void InitializeOpenWindowAndScreen();
-
-        /// <summary>
         /// Window を開く
         /// </summary>
-        public IEnumerator OnOpenWindowEnumerator(string nextWindowPath, string nextScreenPath,
+        public IEnumerator OnOpenWindow(string nextWindowPath, string nextScreenPath,
             string currentWindowPath, string currentScreenPath)
         {
             if (currentWindowPath != nextWindowPath)
@@ -56,29 +46,29 @@ namespace Clione.Home
                 var prefab = Resources.Load<GameObject>(nextWindowPath);
                 _currentWindowGameObject = Instantiate(prefab);
                 _currentWindowGameObject.transform.SetParent(_windowRootTransform.transform, false);
-                _currentOpenWindow = _currentWindowGameObject.GetComponent<WindowPresenterBase>();
+                _currentOpenWindow = _currentWindowGameObject.GetComponent<WindowBase>();
                 _currentOpenWindow.SetWindowPath(nextWindowPath);
-                _currentOpenWindow.Initialize();
+                yield return StartCoroutine(_currentOpenWindow.Initialize());
             }
 
-            yield return StartCoroutine(_currentOpenWindow.OnBeforeOpenWindowEnumerator());
-            yield return StartCoroutine(_currentOpenWindow.OnOpenWindowEnumerator(nextScreenPath, currentScreenPath));
-            yield return StartCoroutine(_currentOpenWindow.OnAfterOpenWindowEnumerator());
+            yield return StartCoroutine(_currentOpenWindow.OnBeforeOpenWindow());
+            yield return StartCoroutine(_currentOpenWindow.OnOpenWindow(nextScreenPath, currentScreenPath));
+            yield return StartCoroutine(_currentOpenWindow.OnAfterOpenWindow());
         }
 
         /// <summary>
         /// Windowを閉じる
         /// </summary>
-        public IEnumerator OnCloseWindowEnumerator()
+        public IEnumerator OnCloseWindow()
         {
             if (_currentOpenWindow == null)
             {
                 yield break;
             }
 
-            yield return StartCoroutine(_currentOpenWindow.OnBeforeCloseWindowEnumerator());
-            yield return StartCoroutine(_currentOpenWindow.OnCloseWindowEnumerator());
-            yield return StartCoroutine(_currentOpenWindow.OnAfterCloseWindowEnumerator());
+            yield return StartCoroutine(_currentOpenWindow.OnBeforeCloseWindow());
+            yield return StartCoroutine(_currentOpenWindow.OnCloseWindow());
+            yield return StartCoroutine(_currentOpenWindow.OnAfterCloseWindow());
             DestroyImmediate(_currentWindowGameObject);
             _currentWindowGameObject = null;
             _currentOpenWindow = null;
@@ -87,7 +77,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を閉じる
         /// </summary>
-        public IEnumerator OnCloseScreenEnumerator()
+        public IEnumerator OnCloseScreen()
         {
             if (_currentOpenWindow == null)
             {
@@ -99,7 +89,7 @@ namespace Clione.Home
                 yield break;
             }
 
-            yield return StartCoroutine(_currentOpenWindow.OnCloseScreenEnumerator());
+            yield return StartCoroutine(_currentOpenWindow.OnCloseScreen());
             DestroyImmediate(_currentOpenWindow.CurrentOpenScreenPrefab);
             _currentOpenWindow.SetNullScreenPrefab();
         }

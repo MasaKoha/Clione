@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
-using Clione.Utility;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Clione.Home
 {
