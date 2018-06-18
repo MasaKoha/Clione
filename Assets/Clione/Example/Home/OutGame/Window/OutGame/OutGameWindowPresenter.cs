@@ -1,16 +1,18 @@
-﻿using Clione.Home;
+﻿using System.Collections;
+using Clione.Home;
 using UnityEngine;
 
 namespace Clione.Example
 {
-    public class OutGameWindowPresenter : WindowPresenterBase
+    public class OutGameWindowPresenter : WindowBase
     {
         [SerializeField] private OutGameWindowView _view;
 
-        public override void Initialize()
+        public override IEnumerator Initialize()
         {
             _view.Initialize();
             SetEvent();
+            yield break;
         }
 
         private void SetEvent()
