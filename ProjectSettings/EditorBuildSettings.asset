@@ -4,4 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Clione/Example/Home/Scenes/Start.unity
+    guid: a40bf452bead647de8bf2a0301d2b030
+  - enabled: 1
+    path: Assets/Clione/Example/Home/Scenes/OutGame.unity
+    guid: 8a1af9a67ec947f4e97de9d60f010481
+  - enabled: 1
+    path: Assets/Clione/Example/Home/Scenes/InGame.unity
+    guid: f264d64812f9b0142ac5bc012e7de13e
