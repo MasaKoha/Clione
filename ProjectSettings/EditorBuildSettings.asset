@@ -6,20 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Clione/Example/Home/Scenes/Start.unity
+    path: Assets/Clione/Example/Home/Standard/Scenes/Start.unity
     guid: a40bf452bead647de8bf2a0301d2b030
   - enabled: 1
-    path: Assets/Clione/Example/Home/Scenes/OutGame.unity
+    path: Assets/Clione/Example/Home/Standard/Scenes/OutGame.unity
     guid: 8a1af9a67ec947f4e97de9d60f010481
   - enabled: 1
-    path: Assets/Clione/Example/Home/Scenes/InGame.unity
+    path: Assets/Clione/Example/Home/Standard/Scenes/InGame.unity
     guid: f264d64812f9b0142ac5bc012e7de13e
   - enabled: 1
-    path: Assets/Clione/Example/Home/SimpleSceneLoad/SimpleSceneLoadMain.unity
+    path: Assets/Clione/Example/Home/LoadSceneOnly/Scenes/LoadSceneOnlyStart.unity
     guid: 9133378e5c40e4e32835a808e13c8a0c
   - enabled: 1
-    path: Assets/Clione/Example/Home/SimpleSceneLoad/Scene1.unity
+    path: Assets/Clione/Example/Home/LoadSceneOnly/Scenes/Scene1.unity
     guid: ec7d335b66de7403a98bd163512330b6
   - enabled: 1
-    path: Assets/Clione/Example/Home/SimpleSceneLoad/Scene2.unity
+    path: Assets/Clione/Example/Home/LoadSceneOnly/Scenes/Scene2.unity
     guid: 3ef30f0768b2b4054a0b972b1af0c239
