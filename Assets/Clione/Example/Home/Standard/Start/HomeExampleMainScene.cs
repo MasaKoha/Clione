@@ -8,7 +8,12 @@ namespace Clione.Example
         private void Start()
         {
             SceneLoader.Initialize(new ClioneSceneManager());
+        }
+
+        protected override IEnumerator OnInitialize(object param)
+        {
             SceneLoader.LoadScene("OutGame");
+            yield break;
         }
     }
 }

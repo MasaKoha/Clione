@@ -30,10 +30,12 @@ namespace Clione.Home
         /// <summary>
         /// 非同期の初期化処理
         /// </summary>
-        public virtual IEnumerator Initialize(object param)
+        public IEnumerator Initialize(object param)
         {
-            yield break;
+            yield return StartCoroutine(OnInitialize(param));
         }
+
+        protected abstract IEnumerator OnInitialize(object param);
 
         /// <summary>
         /// Window を開く

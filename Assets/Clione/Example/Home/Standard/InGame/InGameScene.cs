@@ -9,7 +9,7 @@ namespace Clione.Example
     {
         [SerializeField] private Button _outGameButton;
 
-        public override IEnumerator Initialize(object param)
+        protected override IEnumerator OnInitialize(object param)
         {
             _outGameButton.onClick.AddListener(() => SceneLoader.LoadScene("OutGame"));
             yield break;
