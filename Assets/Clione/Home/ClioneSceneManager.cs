@@ -78,7 +78,7 @@ namespace Clione.Home
         /// <summary>
         /// Window と Screen を読み込む
         /// </summary>
-        public IEnumerator LoadWindow(string loadWindowPath, string loadScreenPath, Action onComplete = null)
+        public virtual IEnumerator LoadWindow(string loadWindowPath, string loadScreenPath, Action onComplete = null)
         {
             yield return _mono.StartCoroutine(
                 LoadScene(CurrentSceneName, loadWindowPath, loadScreenPath, null, onComplete));
@@ -87,7 +87,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を読み込む
         /// </summary>
-        public IEnumerator LoadScreen(string loadScreenPath, Action onComplete = null)
+        public virtual IEnumerator LoadScreen(string loadScreenPath, Action onComplete = null)
         {
             yield return _mono.StartCoroutine(LoadScene(CurrentSceneName, CurrentWindowPath,
                 loadScreenPath, null, onComplete));
