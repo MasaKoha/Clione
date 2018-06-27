@@ -10,7 +10,7 @@ namespace Clione.Example
             SceneLoader.Initialize(new ClioneSceneManager());
         }
 
-        protected override IEnumerator OnInitialize(object param)
+        public override IEnumerator InitializeEnumerator(object param)
         {
             SceneLoader.LoadScene("OutGame");
             yield break;

@@ -7,7 +7,7 @@ namespace Clione.Home
 {
     public class Scene2Main : SceneBase
     {
-        protected override IEnumerator OnInitialize(object param)
+        public override IEnumerator InitializeEnumerator(object param)
         {
             var parameter = param as SceneParam;
             Assert.IsNotNull(parameter);

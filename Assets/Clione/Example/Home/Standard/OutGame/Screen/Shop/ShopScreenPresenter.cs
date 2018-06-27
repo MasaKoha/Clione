@@ -8,7 +8,7 @@ namespace Clione.Example
     {
         [SerializeField] private ShopScreenView _view;
 
-        public override IEnumerator Initialize()
+        public override IEnumerator InitializeEnumerator()
         {
             _view.Initialize();
             yield break;

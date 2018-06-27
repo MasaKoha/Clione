@@ -8,18 +8,18 @@ namespace Clione.Example
     {
         [SerializeField] private HomeScreenView _view;
 
-        public override IEnumerator Initialize()
+        public override IEnumerator InitializeEnumerator()
         {
             _view.Initialize();
             yield break;
         }
 
-        public override IEnumerator OnBeforeOpenScreen()
+        public override IEnumerator OnBeforeOpenScreenEnumerator()
         {
             yield break;
         }
 
-        public override IEnumerator OnBeforeCloseScreen()
+        public override IEnumerator OnBeforeCloseScreenEnumerator()
         {
             yield break;
         }

@@ -56,47 +56,46 @@ namespace Clione.Home
         /// <summary>
         /// シーンを読み込む
         /// </summary>
-        public IEnumerator LoadScene(string loadSceneName, object param = null, Action onComplete = null)
+        public IEnumerator LoadSceneEnumerator(string loadSceneName, object param = null, Action onComplete = null)
         {
             if (CurrentSceneName != loadSceneName)
             {
                 yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
                 Resources.UnloadUnusedAssets();
                 GC.Collect();
-                yield return _mono.StartCoroutine(InitializeScene(param));
+                yield return _mono.StartCoroutine(InitializeSceneEnumerator(param));
             }
 
             onComplete?.Invoke();
         }
 
-        private IEnumerator InitializeScene(object param)
+        private IEnumerator InitializeSceneEnumerator(object param)
         {
             _currentOpenScene = GetCurrentScenePresenter();
-            yield return _mono.StartCoroutine(_currentOpenScene.Initialize(param));
+            yield return _mono.StartCoroutine(_currentOpenScene.InitializeEnumerator(param));
         }
 
         /// <summary>
         /// Window と Screen を読み込む
         /// </summary>
-        public virtual IEnumerator LoadWindow(string loadWindowPath, string loadScreenPath, Action onComplete = null)
+        public virtual IEnumerator LoadWindowEnumerator(string loadWindowPath, string loadScreenPath, Action onComplete = null)
         {
-            yield return _mono.StartCoroutine(
-                LoadScene(CurrentSceneName, loadWindowPath, loadScreenPath, null, onComplete));
+            yield return _mono.StartCoroutine(LoadSceneEnumerator(CurrentSceneName, loadWindowPath, loadScreenPath, null, onComplete));
         }
 
         /// <summary>
         /// Screen を読み込む
         /// </summary>
-        public virtual IEnumerator LoadScreen(string loadScreenPath, Action onComplete = null)
+        public virtual IEnumerator LoadScreenEnumerator(string loadScreenPath, Action onComplete = null)
         {
-            yield return _mono.StartCoroutine(LoadScene(CurrentSceneName, CurrentWindowPath,
+            yield return _mono.StartCoroutine(LoadSceneEnumerator(CurrentSceneName, CurrentWindowPath,
                 loadScreenPath, null, onComplete));
         }
 
         /// <summary>
         /// Scene を読み込む
         /// </summary>
-        private IEnumerator LoadScene(string loadSceneName, string loadWindowPath, string loadScreenPath,
+        private IEnumerator LoadSceneEnumerator(string loadSceneName, string loadWindowPath, string loadScreenPath,
             object param, Action onComplete)
         {
             if (_isLoadingScene)
@@ -115,22 +114,22 @@ namespace Clione.Home
                 Resources.UnloadUnusedAssets();
                 GC.Collect();
                 _currentOpenScene = GetCurrentScenePresenter();
-                yield return _mono.StartCoroutine(_currentOpenScene.Initialize(param));
+                yield return _mono.StartCoroutine(_currentOpenScene.InitializeEnumerator(param));
             }
 
             if (CurrentWindowPath != loadWindowPath)
             {
-                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreen());
-                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseWindow());
+                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreenEnumerator());
+                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseWindowEnumerator());
             }
 
             if (CurrentScreenPath != loadScreenPath)
             {
-                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreen());
+                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreenEnumerator());
             }
 
             yield return _mono.StartCoroutine(
-                _currentOpenScene.OnOpenWindow(loadWindowPath, loadScreenPath, CurrentWindowPath,
+                _currentOpenScene.OnOpenWindowEnumerator(loadWindowPath, loadScreenPath, CurrentWindowPath,
                     CurrentScreenPath));
 
             onComplete?.Invoke();

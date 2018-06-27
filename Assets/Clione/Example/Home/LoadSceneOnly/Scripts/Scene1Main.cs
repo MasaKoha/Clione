@@ -9,7 +9,7 @@ namespace Clione.Example
     {
         [SerializeField] private Button _loadSceneButton;
 
-        protected override IEnumerator OnInitialize(object param)
+        public override IEnumerator InitializeEnumerator(object param)
         {
             SetEvent();
             yield break;

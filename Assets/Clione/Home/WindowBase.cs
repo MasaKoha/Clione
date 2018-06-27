@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Clione.Home
@@ -20,19 +21,14 @@ namespace Clione.Home
         /// <summary>
         /// 現在開かれている Screen の GameObject
         /// </summary>
-        public GameObject CurrentOpenScreenPrefab { get; private set; }
-
-        public void SetNullScreenPrefab()
-        {
-            CurrentOpenScreenPrefab = null;
-        }
+        public Dictionary<string, GameObject> ScreenPrefabList = new Dictionary<string, GameObject>();
 
         public void SetWindowPath(string path) => WindowPath = path;
 
         /// <summary>
         /// 初期化
         /// </summary>
-        public virtual IEnumerator Initialize()
+        public virtual IEnumerator InitializeEnumerator()
         {
             yield break;
         }
@@ -42,7 +38,7 @@ namespace Clione.Home
         /// <summary>
         /// Window が開かれる前の処理
         /// </summary>
-        public virtual IEnumerator OnBeforeOpenWindow()
+        public virtual IEnumerator OnBeforeOpenWindowEnumerator()
         {
             yield break;
         }
@@ -50,29 +46,31 @@ namespace Clione.Home
         /// <summary>
         /// Window が開かられるときの処理
         /// </summary>
-        public IEnumerator OnOpenWindow(string nextScreenPath, string currentScreenPath)
+        public IEnumerator OnOpenWindowEnumerator(string nextScreenPath, string currentScreenPath)
         {
-            if (CurrentOpenScreenPrefab == null)
+            if (currentScreenPath != nextScreenPath)
             {
-                if (currentScreenPath != nextScreenPath)
+                if (!ScreenPrefabList.ContainsKey(nextScreenPath) || ScreenPrefabList[nextScreenPath] == null)
                 {
                     var prefab = Resources.Load<GameObject>(nextScreenPath);
-                    CurrentOpenScreenPrefab = Instantiate(prefab, this.transform);
-                    CurrentOpenScreen = CurrentOpenScreenPrefab.GetComponent<ScreenBase>();
-                    CurrentOpenScreen.SetScreenPath(nextScreenPath);
-                    yield return StartCoroutine(CurrentOpenScreen.Initialize());
+                    ScreenPrefabList.Add(nextScreenPath, Instantiate(prefab, this.transform));
                 }
+
+                CurrentOpenScreen = ScreenPrefabList[nextScreenPath].GetComponent<ScreenBase>();
+                CurrentOpenScreen.gameObject.SetActive(true);
+                CurrentOpenScreen.SetScreenPath(nextScreenPath);
+                yield return StartCoroutine(CurrentOpenScreen.InitializeEnumerator());
             }
 
-            yield return StartCoroutine(CurrentOpenScreen.OnBeforeOpenScreen());
-            yield return StartCoroutine(CurrentOpenScreen.OnOpenScreen());
-            yield return StartCoroutine(CurrentOpenScreen.OnAfterOpenScreen());
+            yield return StartCoroutine(CurrentOpenScreen.OnBeforeOpenScreenEnumerator());
+            yield return StartCoroutine(CurrentOpenScreen.OnOpenScreenEnumerator());
+            yield return StartCoroutine(CurrentOpenScreen.OnAfterOpenScreenEnumerator());
         }
 
         /// <summary>
         /// Window が開かれたあとの処理
         /// </summary>
-        public virtual IEnumerator OnAfterOpenWindow()
+        public virtual IEnumerator OnAfterOpenWindowEnumerator()
         {
             yield break;
         }
@@ -84,7 +82,7 @@ namespace Clione.Home
         /// <summary>
         /// Window を閉じる前の処理
         /// </summary>
-        public virtual IEnumerator OnBeforeCloseWindow()
+        public virtual IEnumerator OnBeforeCloseWindowEnumerator()
         {
             yield break;
         }
@@ -92,20 +90,20 @@ namespace Clione.Home
         /// <summary>
         /// Window を閉じるときの処理
         /// </summary>
-        public IEnumerator OnCloseWindow()
+        public IEnumerator OnCloseWindowEnumerator()
         {
             if (CurrentOpenScreen == null)
             {
                 yield break;
             }
 
-            yield return StartCoroutine(OnCloseScreen());
+            yield return StartCoroutine(OnCloseScreenEnumerator());
         }
 
         /// <summary>
         /// Window を閉じたあとの処理
         /// </summary>
-        public virtual IEnumerator OnAfterCloseWindow()
+        public virtual IEnumerator OnAfterCloseWindowEnumerator()
         {
             yield break;
         }
@@ -115,13 +113,12 @@ namespace Clione.Home
         /// <summary>
         /// 現在開かれている Screen が閉じられる前の処理
         /// </summary>
-        public IEnumerator OnCloseScreen()
+        public IEnumerator OnCloseScreenEnumerator()
         {
-            yield return StartCoroutine(CurrentOpenScreen.OnBeforeCloseScreen());
-            yield return StartCoroutine(CurrentOpenScreen.OnCloseScreen());
-            yield return StartCoroutine(CurrentOpenScreen.OnAfterCloseScreen());
-            DestroyImmediate(CurrentOpenScreenPrefab);
-            CurrentOpenScreenPrefab = null;
+            yield return StartCoroutine(CurrentOpenScreen.OnBeforeCloseScreenEnumerator());
+            yield return StartCoroutine(CurrentOpenScreen.OnCloseScreenEnumerator());
+            yield return StartCoroutine(CurrentOpenScreen.OnAfterCloseScreenEnumerator());
+            CurrentOpenScreen.gameObject.SetActive(false);
         }
     }
 }

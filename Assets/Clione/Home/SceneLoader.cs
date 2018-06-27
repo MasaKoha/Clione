@@ -42,17 +42,17 @@ namespace Clione.Home
 
         public static IEnumerator LoadSceneEnumerator(string sceneName, object param = null, Action onComplete = null)
         {
-            yield return Mono.StartCoroutine(_sceneManager.LoadScene(sceneName, param, onComplete));
+            yield return Mono.StartCoroutine(_sceneManager.LoadSceneEnumerator(sceneName, param, onComplete));
         }
 
         public static IEnumerator LoadWindowEnumerator(string windowPath, string screenPath, Action onComplete = null)
         {
-            yield return Mono.StartCoroutine(_sceneManager.LoadWindow(windowPath, screenPath, onComplete));
+            yield return Mono.StartCoroutine(_sceneManager.LoadWindowEnumerator(windowPath, screenPath, onComplete));
         }
 
         public static IEnumerator LoadScreenEnumerator(string screenPath, Action onComplete = null)
         {
-            yield return Mono.StartCoroutine(_sceneManager.LoadScreen(screenPath, onComplete));
+            yield return Mono.StartCoroutine(_sceneManager.LoadScreenEnumerator(screenPath, onComplete));
         }
     }
 }
