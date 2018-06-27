@@ -9,12 +9,12 @@ namespace Clione.Home
     /// </summary>
     public class SimpleSceneManager : ClioneSceneManager
     {
-        public override IEnumerator LoadWindow(string loadWindowPath, string loadScreenPath, Action onComplete = null)
+        public override IEnumerator LoadWindowEnumerator(string loadWindowPath, string loadScreenPath, Action onComplete = null)
         {
             throw new NotImplementedException("Not Implement LoadWindow.");
         }
 
-        public override IEnumerator LoadScreen(string loadScreenPath, Action onComplete = null)
+        public override IEnumerator LoadScreenEnumerator(string loadScreenPath, Action onComplete = null)
         {
             throw new NotImplementedException("Not Implement LoadScreen.");
         }

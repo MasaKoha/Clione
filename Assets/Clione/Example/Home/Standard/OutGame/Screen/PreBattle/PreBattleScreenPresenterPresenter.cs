@@ -5,7 +5,7 @@ namespace Clione.Example
 {
     public class PreBattleScreenPresenterPresenter : OutGameScreenPresenterBase<PreBattleScreenView>
     {
-        public override IEnumerator Initialize()
+        public override IEnumerator InitializeEnumerator()
         {
             SetEvent();
             yield break;

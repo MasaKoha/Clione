@@ -8,13 +8,13 @@ namespace Clione.Example
     {
         [SerializeField] protected T View;
 
-        public override IEnumerator Initialize()
+        public override IEnumerator InitializeEnumerator()
         {
             View.Initialize();
             yield break;
         }
 
-        public override IEnumerator OnBeforeOpenScreen()
+        public override IEnumerator OnBeforeOpenScreenEnumerator()
         {
             yield break;
         }

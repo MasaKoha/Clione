@@ -5,7 +5,7 @@ namespace Clione.Example
 {
     public class OutGameScene : SceneBase
     {
-        protected override IEnumerator OnInitialize(object param)
+        public override IEnumerator InitializeEnumerator(object param)
         {
             var windowPath = ExampleResourcePrefabPath.GetWindowPath(OutGameWindowType.HomeWindow.ToString());
             var screenPath = ExampleResourcePrefabPath.GetScreenPath(OutGameScreenType.HomeScreen.ToString());
