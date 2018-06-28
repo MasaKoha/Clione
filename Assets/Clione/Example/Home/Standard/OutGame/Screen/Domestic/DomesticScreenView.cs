@@ -4,10 +4,7 @@ using UnityEngine.UI;
 namespace Clione.Example
 {
     [RequireComponent(typeof(DomesticScreenPresenter))]
-    public class DomesticScreenView : MonoBehaviour
+    public class DomesticScreenView : OutGameScreenViewBase
     {
-        public void Initialize()
-        {
-        }
     }
 }

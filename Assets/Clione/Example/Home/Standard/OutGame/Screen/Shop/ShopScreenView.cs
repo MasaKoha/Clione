@@ -1,11 +1,6 @@
-﻿using UnityEngine;
-
-namespace Clione.Example
+﻿namespace Clione.Example
 {
-    public class ShopScreenView : MonoBehaviour
+    public class ShopScreenView : OutGameScreenViewBase
     {
-        public void Initialize()
-        {
-        }
     }
 }
