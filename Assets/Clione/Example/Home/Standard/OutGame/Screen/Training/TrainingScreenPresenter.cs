@@ -4,14 +4,7 @@ using UnityEngine;
 
 namespace Clione.Example
 {
-    public class TrainingScreenPresenter : ScreenBase
+    public class TrainingScreenPresenter : OutGameScreenPresenterBase<TrainingScreenView>
     {
-        [SerializeField] private TrainingScreenView _view;
-
-        public override IEnumerator InitializeEnumerator()
-        {
-            _view.Initialize();
-            yield break;
-        }
     }
 }

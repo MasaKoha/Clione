@@ -36,15 +36,18 @@ namespace Clione.Example
             _simpleMoveAnimation.MoveX(0);
         }
 
-        protected override void OnNext(bool isDig)
+        protected override void OnDig()
         {
-            _simpleMoveAnimation.MoveX(-ViewWidth * (isDig ? 1 : -1), 0.3f, () =>
+            _simpleMoveAnimation.MoveX(-ViewWidth * 1, 0.3f, () => { this.gameObject.SetActive(false); });
+        }
+
+        // TODO:変数名を要確認
+        protected override void OnUndig()
+        {
+            _simpleMoveAnimation.MoveX(-ViewWidth * -1, 0.3f, () =>
             {
                 this.gameObject.SetActive(false);
-                if (!isDig)
-                {
-                    Destroy(this.gameObject);
-                }
+                Destroy(this.gameObject);
             });
         }
     }

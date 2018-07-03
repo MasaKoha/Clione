@@ -3,10 +3,7 @@
 namespace Clione.Example
 {
     [RequireComponent(typeof(TrainingScreenPresenter))]
-    public class TrainingScreenView : MonoBehaviour
+    public class TrainingScreenView : OutGameScreenViewBase
     {
-        public void Initialize()
-        {
-        }
     }
 }

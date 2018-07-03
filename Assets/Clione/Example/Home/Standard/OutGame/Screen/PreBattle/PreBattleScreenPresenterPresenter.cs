@@ -7,6 +7,7 @@ namespace Clione.Example
     {
         public override IEnumerator InitializeEnumerator()
         {
+            StartCoroutine(base.InitializeEnumerator());
             SetEvent();
             yield break;
         }

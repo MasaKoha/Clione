@@ -1,11 +1,6 @@
-﻿using UnityEngine;
-
-namespace Clione.Example
+﻿namespace Clione.Example
 {
-    public class HomeScreenView : MonoBehaviour
+    public class HomeScreenView : OutGameScreenViewBase
     {
-        public void Initialize()
-        {
-        }
     }
 }

@@ -36,11 +36,23 @@ namespace Clione.DrillDown
             var hideDrillDownViewer = _iDrillDownViewerStack.Pop();
             hideDrillDownViewer.Next(false);
 
-            if (_iDrillDownViewerStack.Count != 0)
+            if (_iDrillDownViewerStack.Count == 0)
             {
-                var showDrillDownViewer = _iDrillDownViewerStack.Peek();
-                showDrillDownViewer.Show();
+                return;
             }
+
+            var showDrillDownViewer = _iDrillDownViewerStack.Peek();
+            showDrillDownViewer.Show();
+        }
+
+        public void Clear()
+        {
+            foreach (var viewer in _iDrillDownViewerStack)
+            {
+                viewer.Next(false);
+            }
+
+            _iDrillDownViewerStack.Clear();
         }
     }
 }

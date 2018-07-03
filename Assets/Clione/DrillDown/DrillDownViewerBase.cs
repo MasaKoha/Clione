@@ -30,9 +30,19 @@ namespace Clione.DrillDown
 
         public void Next(bool isDig)
         {
-            OnNext(isDig);
+            // OnNext(isDig);
+            if (isDig)
+            {
+                OnDig();
+            }
+            else
+            {
+                OnUndig();
+            }
         }
 
-        protected abstract void OnNext(bool isDig);
+        protected abstract void OnDig();
+
+        protected abstract void OnUndig();
     }
 }
