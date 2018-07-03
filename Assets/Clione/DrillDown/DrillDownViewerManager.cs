@@ -44,5 +44,15 @@ namespace Clione.DrillDown
             var showDrillDownViewer = _iDrillDownViewerStack.Peek();
             showDrillDownViewer.Show();
         }
+
+        public void Clear()
+        {
+            foreach (var viewer in _iDrillDownViewerStack)
+            {
+                viewer.Next(false);
+            }
+
+            _iDrillDownViewerStack.Clear();
+        }
     }
 }
