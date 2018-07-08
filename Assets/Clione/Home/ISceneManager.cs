@@ -12,8 +12,8 @@ namespace Clione.Home
         string CurrentScreenPath { get; }
         bool IsLoadingScene { get; }
         void InitializeSetUp();
-        IEnumerator LoadScene(string loadSceneName, object param = null, Action onComplete = null);
-        IEnumerator LoadWindow(string loadWindowPath, string loadScreenPath, Action onComplete = null);
-        IEnumerator LoadScreen(string loadScreenPath, Action onComplete = null);
+        IEnumerator LoadSceneEnumerator(string loadSceneName, object param = null, Action onComplete = null);
+        IEnumerator LoadWindowEnumerator(string loadWindowPath, string loadScreenPath, Action onComplete = null);
+        IEnumerator LoadScreenEnumerator(string loadScreenPath, Action onComplete = null);
     }
 }

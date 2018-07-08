@@ -15,7 +15,7 @@ namespace Clione.Home
         /// <summary>
         /// 初期化
         /// </summary>
-        public virtual IEnumerator Initialize()
+        public virtual IEnumerator InitializeEnumerator()
         {
             yield break;
         }
@@ -25,7 +25,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を開く前の処理
         /// </summary>
-        public virtual IEnumerator OnBeforeOpenScreen()
+        public virtual IEnumerator OnBeforeOpenScreenEnumerator()
         {
             yield break;
         }
@@ -33,7 +33,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を開くときの処理
         /// </summary>
-        public virtual IEnumerator OnOpenScreen()
+        public virtual IEnumerator OnOpenScreenEnumerator()
         {
             yield break;
         }
@@ -41,7 +41,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen が開かれたあとの処理
         /// </summary>
-        public virtual IEnumerator OnAfterOpenScreen()
+        public virtual IEnumerator OnAfterOpenScreenEnumerator()
         {
             yield break;
         }
@@ -53,7 +53,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を閉じる前の処理
         /// </summary>
-        public virtual IEnumerator OnBeforeCloseScreen()
+        public virtual IEnumerator OnBeforeCloseScreenEnumerator()
         {
             yield break;
         }
@@ -61,7 +61,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を閉じたときの処理
         /// </summary>
-        public virtual IEnumerator OnCloseScreen()
+        public virtual IEnumerator OnCloseScreenEnumerator()
         {
             yield break;
         }
@@ -69,7 +69,7 @@ namespace Clione.Home
         /// <summary>
         /// Screen を閉じたあとの処理
         /// </summary>
-        public virtual IEnumerator OnAfterCloseScreen()
+        public virtual IEnumerator OnAfterCloseScreenEnumerator()
         {
             yield break;
         }
