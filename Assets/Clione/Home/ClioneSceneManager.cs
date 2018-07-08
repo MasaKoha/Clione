@@ -71,14 +71,15 @@ namespace Clione.Home
 
         private IEnumerator InitializeSceneEnumerator(object param)
         {
-            _currentOpenScene = GetCurrentScenePresenter();
+            _currentOpenScene = GetCurrentSceneBase();
             yield return _mono.StartCoroutine(_currentOpenScene.InitializeEnumerator(param));
         }
 
         /// <summary>
         /// Window と Screen を読み込む
         /// </summary>
-        public virtual IEnumerator LoadWindowEnumerator(string loadWindowPath, string loadScreenPath, Action onComplete = null)
+        public virtual IEnumerator LoadWindowEnumerator(string loadWindowPath, string loadScreenPath,
+            Action onComplete = null)
         {
             yield return _mono.StartCoroutine(LoadSceneEnumerator(CurrentSceneName, loadWindowPath, loadScreenPath, null, onComplete));
         }
@@ -88,15 +89,13 @@ namespace Clione.Home
         /// </summary>
         public virtual IEnumerator LoadScreenEnumerator(string loadScreenPath, Action onComplete = null)
         {
-            yield return _mono.StartCoroutine(LoadSceneEnumerator(CurrentSceneName, CurrentWindowPath,
-                loadScreenPath, null, onComplete));
+            yield return _mono.StartCoroutine(LoadSceneEnumerator(CurrentSceneName, CurrentWindowPath, loadScreenPath, null, onComplete));
         }
 
         /// <summary>
         /// Scene を読み込む
         /// </summary>
-        private IEnumerator LoadSceneEnumerator(string loadSceneName, string loadWindowPath, string loadScreenPath,
-            object param, Action onComplete)
+        private IEnumerator LoadSceneEnumerator(string loadSceneName, string loadWindowPath, string loadScreenPath, object param, Action onComplete)
         {
             if (_isLoadingScene)
             {
@@ -106,14 +105,14 @@ namespace Clione.Home
             yield return new WaitUntil(() => !_isLoadingScene);
             _isLoadingScene = true;
 
-            _currentOpenScene = GetCurrentScenePresenter();
+            _currentOpenScene = GetCurrentSceneBase();
 
             if (CurrentSceneName != loadSceneName)
             {
                 yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
                 Resources.UnloadUnusedAssets();
                 GC.Collect();
-                _currentOpenScene = GetCurrentScenePresenter();
+                _currentOpenScene = GetCurrentSceneBase();
                 yield return _mono.StartCoroutine(_currentOpenScene.InitializeEnumerator(param));
             }
 
@@ -128,29 +127,26 @@ namespace Clione.Home
                 yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreenEnumerator());
             }
 
-            yield return _mono.StartCoroutine(
-                _currentOpenScene.OnOpenWindowEnumerator(loadWindowPath, loadScreenPath, CurrentWindowPath,
-                    CurrentScreenPath));
+            yield return _mono.StartCoroutine(_currentOpenScene.OnOpenWindowEnumerator(loadWindowPath, loadScreenPath, CurrentWindowPath, CurrentScreenPath));
 
             onComplete?.Invoke();
             _isLoadingScene = false;
         }
 
         /// <summary>
-        /// 現在のシーンのPresenterを取得する
+        /// 現在のシーンの SceneBase を取得する
         /// </summary>
-        private static SceneBase GetCurrentScenePresenter()
+        private static SceneBase GetCurrentSceneBase()
         {
-            var scenePresenterBase =
-                UnityEngine.Object.FindObjectOfType(typeof(SceneBase)) as SceneBase;
+            var sceneBase = UnityEngine.Object.FindObjectOfType(typeof(SceneBase)) as SceneBase;
 
-            if (scenePresenterBase == null)
+            if (sceneBase == null)
             {
-                Debug.LogError("現在開いているシーンに ScenePresenterBase を継承した GameObject が存在しません。ヒエラルキー上を確認してください。");
+                Debug.LogError("現在開いているシーンに SceneBase を継承した GameObject が存在しません。ヒエラルキー上を確認してください。");
                 return null;
             }
 
-            return UnityEngine.Object.FindObjectOfType(typeof(SceneBase)) as SceneBase;
+            return sceneBase;
         }
     }
 }
