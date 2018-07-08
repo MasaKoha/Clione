@@ -23,7 +23,7 @@ namespace Clione.Home
 
         /// <summary>
         /// 初期化
-        /// アプリケーションの初期化時のみ叩かれる
+        /// アプリケーションの初期化時に必ず呼ぶこと
         /// </summary>
         public static void Initialize(ISceneManager sceneManager)
         {
