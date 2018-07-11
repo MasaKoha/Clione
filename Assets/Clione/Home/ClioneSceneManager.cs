@@ -56,8 +56,16 @@ namespace Clione.Home
         /// <summary>
         /// シーンを読み込む
         /// </summary>
-        public IEnumerator LoadSceneEnumerator(string loadSceneName, object param = null, Action onComplete = null)
+        public IEnumerator LoadWindowAndScreenEnumerator(string loadSceneName, object param = null, Action onComplete = null)
         {
+            if (_isLoadingScene)
+            {
+                Debug.Log($"Load 中に LoadScene が二重で呼ばれたので、あとに Load したほうをキャンセルしました。\n Target LoadScene Name : {loadSceneName}");
+                yield break;
+            }
+
+            _isLoadingScene = true;
+
             if (CurrentSceneName != loadSceneName)
             {
                 yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
@@ -67,6 +75,7 @@ namespace Clione.Home
             }
 
             onComplete?.Invoke();
+            _isLoadingScene = false;
         }
 
         private IEnumerator InitializeSceneEnumerator(object param)
@@ -81,7 +90,7 @@ namespace Clione.Home
         public virtual IEnumerator LoadWindowEnumerator(string loadWindowPath, string loadScreenPath,
             Action onComplete = null)
         {
-            yield return _mono.StartCoroutine(LoadSceneEnumerator(CurrentSceneName, loadWindowPath, loadScreenPath, null, onComplete));
+            yield return _mono.StartCoroutine(LoadWindowAndScreenEnumerator(loadWindowPath, loadScreenPath, null, onComplete));
         }
 
         /// <summary>
@@ -89,32 +98,15 @@ namespace Clione.Home
         /// </summary>
         public virtual IEnumerator LoadScreenEnumerator(string loadScreenPath, Action onComplete = null)
         {
-            yield return _mono.StartCoroutine(LoadSceneEnumerator(CurrentSceneName, CurrentWindowPath, loadScreenPath, null, onComplete));
+            yield return _mono.StartCoroutine(LoadWindowAndScreenEnumerator(CurrentWindowPath, loadScreenPath, null, onComplete));
         }
 
         /// <summary>
         /// Scene を読み込む
         /// </summary>
-        private IEnumerator LoadSceneEnumerator(string loadSceneName, string loadWindowPath, string loadScreenPath, object param, Action onComplete)
+        private IEnumerator LoadWindowAndScreenEnumerator(string loadWindowPath, string loadScreenPath, object param, Action onComplete)
         {
-            if (_isLoadingScene)
-            {
-                Debug.Log("loading...");
-            }
-
-            yield return new WaitUntil(() => !_isLoadingScene);
-            _isLoadingScene = true;
-
             _currentOpenScene = GetCurrentSceneBase();
-
-            if (CurrentSceneName != loadSceneName)
-            {
-                yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
-                Resources.UnloadUnusedAssets();
-                GC.Collect();
-                _currentOpenScene = GetCurrentSceneBase();
-                yield return _mono.StartCoroutine(_currentOpenScene.InitializeEnumerator(param));
-            }
 
             if (CurrentWindowPath != loadWindowPath)
             {
