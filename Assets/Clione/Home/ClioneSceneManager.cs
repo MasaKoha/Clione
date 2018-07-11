@@ -56,11 +56,12 @@ namespace Clione.Home
         /// <summary>
         /// シーンを読み込む
         /// </summary>
-        public IEnumerator LoadWindowAndScreenEnumerator(string loadSceneName, object param = null, Action onComplete = null)
+        public IEnumerator LoadSceneEnumerator(string loadSceneName, object param = null, Action onComplete = null, Action onFail = null)
         {
             if (_isLoadingScene)
             {
                 Debug.Log($"Load 中に LoadScene が二重で呼ばれたので、あとに Load したほうをキャンセルしました。\n Target LoadScene Name : {loadSceneName}");
+                onFail?.Invoke();
                 yield break;
             }
 
