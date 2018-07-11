@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 114495871291506322}
   - component: {fileID: 114626798129194460}
   m_Layer: 5
-  m_Name: PreInGameScreen
+  m_Name: PreBattleScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
