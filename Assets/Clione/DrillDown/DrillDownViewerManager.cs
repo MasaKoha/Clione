@@ -6,7 +6,7 @@ namespace Clione.DrillDown
 {
     public class DrillDownViewerManager
     {
-        private readonly Stack<IDrillDownViewer> _iDrillDownViewerStack = new Stack<IDrillDownViewer>();
+        private readonly Stack<IDrillDownViewer> _drillDownViewerStack = new Stack<IDrillDownViewer>();
 
         private readonly Transform _parent;
 
@@ -20,39 +20,39 @@ namespace Clione.DrillDown
             var viewerGameObject = Resources.Load<GameObject>(path);
             var iDrillDownViewer = Object.Instantiate(viewerGameObject, _parent).GetComponent<IDrillDownViewer>();
 
-            if (_iDrillDownViewerStack.Count != 0)
+            if (_drillDownViewerStack.Count != 0)
             {
-                var currentViewer = _iDrillDownViewerStack.Peek();
+                var currentViewer = _drillDownViewerStack.Peek();
                 currentViewer?.Next(true);
             }
 
-            _iDrillDownViewerStack.Push(iDrillDownViewer);
+            _drillDownViewerStack.Push(iDrillDownViewer);
             iDrillDownViewer.Initialize(param, this);
             iDrillDownViewer.Show();
         }
 
         public void Back()
         {
-            var hideDrillDownViewer = _iDrillDownViewerStack.Pop();
+            var hideDrillDownViewer = _drillDownViewerStack.Pop();
             hideDrillDownViewer.Next(false);
 
-            if (_iDrillDownViewerStack.Count == 0)
+            if (_drillDownViewerStack.Count == 0)
             {
                 return;
             }
 
-            var showDrillDownViewer = _iDrillDownViewerStack.Peek();
+            var showDrillDownViewer = _drillDownViewerStack.Peek();
             showDrillDownViewer.Show();
         }
 
         public void Clear()
         {
-            foreach (var viewer in _iDrillDownViewerStack)
+            foreach (var viewer in _drillDownViewerStack)
             {
                 viewer.Next(false);
             }
 
-            _iDrillDownViewerStack.Clear();
+            _drillDownViewerStack.Clear();
         }
     }
 }

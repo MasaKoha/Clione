@@ -30,7 +30,6 @@ namespace Clione.DrillDown
 
         public void Next(bool isDig)
         {
-            // OnNext(isDig);
             if (isDig)
             {
                 OnDig();
