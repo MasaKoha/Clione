@@ -1,4 +1,5 @@
-﻿using Clione.DrillDown;
+﻿using System;
+using Clione.DrillDown;
 using Clione.Utility;
 using UnityEngine;
 
@@ -21,33 +22,33 @@ namespace Clione.Example
 
         private void SetEvent()
         {
-            _view.BackButtonClickedEvent.AddListener(() => { DrillDownManager.Back(); });
+            _view.BackButtonClickedEvent.AddListener(() => { DrillDownManager.Hide(() => { Debug.Log("HideComplete"); }); });
+
             _view.NextButtonClickedEvent.AddListener(() =>
             {
-                DrillDownManager.Show(
-                    ExampleResourcePrefabPath.GetDrillDownViewerPath("DrillDownViewer1"),
-                    null);
+                DrillDownManager.Show(ExampleResourcePrefabPath.GetDrillDownViewerPath("DrillDownViewer1")
+                    , null
+                    , () => { Debug.Log("Show Complete"); });
             });
         }
 
-        protected override void OnShow()
+        protected override void OnShow(Action onComplete)
         {
             this.gameObject.SetActive(true);
-            _simpleMoveAnimation.MoveX(0);
+            _simpleMoveAnimation.MoveX(0, 0.3f, onComplete);
         }
 
-        protected override void OnDig()
+        protected override void OnDig(Action onComplete)
         {
-            _simpleMoveAnimation.MoveX(-ViewWidth * 1, 0.3f, () => { this.gameObject.SetActive(false); });
+            _simpleMoveAnimation.MoveX(-ViewWidth * 1, 0.3f, onComplete);
         }
 
-        // TODO:変数名を要確認
-        protected override void OnUndig()
+        protected override void OnUndig(Action onComplete)
         {
             _simpleMoveAnimation.MoveX(-ViewWidth * -1, 0.3f, () =>
             {
                 this.gameObject.SetActive(false);
-                Destroy(this.gameObject);
+                onComplete?.Invoke();
             });
         }
     }
