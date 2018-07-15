@@ -15,6 +15,12 @@ namespace Clione.UI
         protected new void Update()
         {
             base.Update();
+
+            if (_eventBitCode == ButtonEventType.None)
+            {
+                return;
+            }
+
             if ((_eventBitCode & ButtonEventType.ClickDown) == ButtonEventType.ClickDown)
             {
                 interactable = false;
