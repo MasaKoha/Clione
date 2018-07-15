@@ -15,17 +15,11 @@ namespace Clione.UI
         protected new void Update()
         {
             base.Update();
-            if (_eventBitCode == ButtonEventType.None)
-            {
-                return;
-            }
-
             if ((_eventBitCode & ButtonEventType.ClickDown) == ButtonEventType.ClickDown)
             {
+                interactable = false;
                 _eventBitCode &= ~ButtonEventType.ClickDown;
                 ButtonEvent.Invoke(ButtonEventType.ClickDown);
-                // Block double click until Clickup.
-                interactable = false;
             }
             else if ((_eventBitCode & ButtonEventType.StartLongTap) == ButtonEventType.StartLongTap)
             {
@@ -49,9 +43,9 @@ namespace Clione.UI
             }
             else if ((_eventBitCode & ButtonEventType.ClickUp) == ButtonEventType.ClickUp)
             {
+                interactable = true;
                 _eventBitCode &= ~ButtonEventType.ClickUp;
                 ButtonEvent.Invoke(ButtonEventType.ClickUp);
-                interactable = true;
             }
         }
 
