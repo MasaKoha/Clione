@@ -12,7 +12,7 @@ namespace Clione.UI
 
         private ButtonEventType _eventBitCode = ButtonEventType.None;
 
-        private new void Update()
+        protected new void Update()
         {
             base.Update();
             if (_eventBitCode == ButtonEventType.None)
