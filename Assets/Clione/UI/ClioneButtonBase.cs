@@ -51,6 +51,12 @@ namespace Clione.UI
         public override void OnPointerDown(PointerEventData eventData)
         {
             base.OnPointerDown(eventData);
+
+            if (!interactable)
+            {
+                return;
+            }
+
             _clickState = ButtonState.ClickDown;
             _isDetermining = true;
             OnClickDown();
