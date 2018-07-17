@@ -19,6 +19,8 @@ namespace Clione.UI
         public UnityEvent OnDecideEvent = new UnityEvent();
         public UnityEvent OnClickUpEvent = new UnityEvent();
 
+        public new UnityEvent onClick => OnDecideEvent;
+
         protected new void Update()
         {
             base.Update();
