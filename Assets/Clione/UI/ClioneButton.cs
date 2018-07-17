@@ -16,11 +16,8 @@ namespace Clione.UI
         public UnityEvent OnStartLongTapEvent = new UnityEvent();
         public UnityEvent OnLongTapEvent = new UnityEvent();
         public UnityEvent OnEndLongTapEvent = new UnityEvent();
+        public UnityEvent OnDecideEvent = new UnityEvent();
         public UnityEvent OnClickUpEvent = new UnityEvent();
-
-        // Unity の onClick と合わせた
-        public UnityEvent OnClick = new UnityEvent();
-
 
         protected new void Update()
         {
@@ -60,7 +57,7 @@ namespace Clione.UI
             {
                 _eventBitCode &= ~ButtonEventType.Decide;
                 ButtonEvent.Invoke(ButtonEventType.Decide);
-                OnClick.Invoke();
+                OnDecideEvent.Invoke();
             }
             else if ((_eventBitCode & ButtonEventType.ClickUp) == ButtonEventType.ClickUp)
             {
