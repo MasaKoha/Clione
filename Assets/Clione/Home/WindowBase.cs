@@ -19,9 +19,9 @@ namespace Clione.Home
         public string WindowPath { get; private set; }
 
         /// <summary>
-        /// 現在開かれている Screen の GameObject
+        /// これまで開いた Screen の Base クラス
         /// </summary>
-        public Dictionary<string, GameObject> ScreenPrefabList = new Dictionary<string, GameObject>();
+        public Dictionary<string, ScreenBase> ScreenBaseList = new Dictionary<string, ScreenBase>();
 
         public void SetWindowPath(string path) => WindowPath = path;
 
@@ -50,16 +50,16 @@ namespace Clione.Home
         {
             if (currentScreenPath != nextScreenPath)
             {
-                if (!ScreenPrefabList.ContainsKey(nextScreenPath) || ScreenPrefabList[nextScreenPath] == null)
+                if (!ScreenBaseList.ContainsKey(nextScreenPath) || ScreenBaseList[nextScreenPath] == null)
                 {
                     var prefab = Resources.Load<GameObject>(nextScreenPath);
-                    ScreenPrefabList.Add(nextScreenPath, Instantiate(prefab, this.transform));
+                    ScreenBaseList.Add(nextScreenPath, Instantiate(prefab, this.transform).GetComponent<ScreenBase>());
+                    yield return StartCoroutine(ScreenBaseList[nextScreenPath].InitializeEnumerator());
                 }
 
-                CurrentOpenScreen = ScreenPrefabList[nextScreenPath].GetComponent<ScreenBase>();
+                CurrentOpenScreen = ScreenBaseList[nextScreenPath];
                 CurrentOpenScreen.gameObject.SetActive(true);
                 CurrentOpenScreen.SetScreenPath(nextScreenPath);
-                yield return StartCoroutine(CurrentOpenScreen.InitializeEnumerator());
             }
 
             yield return StartCoroutine(CurrentOpenScreen.OnBeforeOpenScreenEnumerator());

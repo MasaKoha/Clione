@@ -24,9 +24,9 @@ namespace Clione.Home
         public string CurrentOpenScreenPath => _currentOpenWindow?.CurrentOpenScreenPath ?? string.Empty;
 
         /// <summary>
-        /// 現在開かれている Window の GameObject
+        /// これまで開いた Window の Base クラス
         /// </summary>
-        private readonly Dictionary<string, GameObject> _windowGameObjectList = new Dictionary<string, GameObject>();
+        private readonly Dictionary<string, WindowBase> _windowBaseList = new Dictionary<string, WindowBase>();
 
         /// <summary>
         /// 非同期の初期化処理
@@ -44,17 +44,16 @@ namespace Clione.Home
         {
             if (currentWindowPath != nextWindowPath)
             {
-                if (!_windowGameObjectList.ContainsKey(nextWindowPath) || _windowGameObjectList[nextWindowPath] == null)
+                if (!_windowBaseList.ContainsKey(nextWindowPath) || _windowBaseList[nextWindowPath] == null)
                 {
                     var prefab = Resources.Load<GameObject>(nextWindowPath);
-                    _windowGameObjectList.Add(nextWindowPath, Instantiate(prefab));
-                    _windowGameObjectList[nextWindowPath].transform.SetParent(_windowRootTransform.transform, false);
+                    _windowBaseList.Add(nextWindowPath, Instantiate(prefab, _windowRootTransform).GetComponent<WindowBase>());
+                    StartCoroutine(_windowBaseList[nextWindowPath].InitializeEnumerator());
                 }
 
-                _currentOpenWindow = _windowGameObjectList[nextWindowPath].GetComponent<WindowBase>();
+                _currentOpenWindow = _windowBaseList[nextWindowPath].GetComponent<WindowBase>();
                 _currentOpenWindow.gameObject.SetActive(true);
                 _currentOpenWindow.SetWindowPath(nextWindowPath);
-                yield return StartCoroutine(_currentOpenWindow.InitializeEnumerator());
             }
 
             yield return StartCoroutine(_currentOpenWindow.OnBeforeOpenWindowEnumerator());
