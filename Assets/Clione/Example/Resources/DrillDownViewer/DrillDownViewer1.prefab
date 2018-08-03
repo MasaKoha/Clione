@@ -58,7 +58,7 @@ GameObject:
   - component: {fileID: 114000046162151560}
   - component: {fileID: 114141824322923018}
   m_Layer: 5
-  m_Name: BackButton
+  m_Name: HideButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -283,9 +283,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Back
-
-'
+  m_Text: Hide
 --- !u!114 &114602713559809150
 MonoBehaviour:
   m_ObjectHideFlags: 1
