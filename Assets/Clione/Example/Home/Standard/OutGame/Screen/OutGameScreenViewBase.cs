@@ -22,12 +22,21 @@ namespace Clione.Example
 
         public IEnumerator ShowEnumerator()
         {
-            yield return StartCoroutine(_animation.MoveXEnumerator(0));
+            var move = _animation.MoveXEnumerator(0);
+            while (move.MoveNext())
+            {
+                yield return null;
+            }
         }
 
         public IEnumerator HideEnumerator()
         {
-            yield return StartCoroutine(_animation.MoveXEnumerator(-_screenWidth));
+            var move = _animation.MoveXEnumerator(-_screenWidth);
+            while (move.MoveNext())
+            {
+                yield return null;
+            }
+
             SetScreenInitializePosition();
         }
 

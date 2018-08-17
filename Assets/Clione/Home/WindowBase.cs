@@ -54,7 +54,12 @@ namespace Clione.Home
                 {
                     var prefab = Resources.Load<GameObject>(nextScreenPath);
                     ScreenBaseList.Add(nextScreenPath, Instantiate(prefab, this.transform).GetComponent<ScreenBase>());
-                    yield return StartCoroutine(ScreenBaseList[nextScreenPath].InitializeEnumerator());
+
+                    var initialize = ScreenBaseList[nextScreenPath].InitializeEnumerator();
+                    while (initialize.MoveNext())
+                    {
+                        yield return null;
+                    }
                 }
 
                 CurrentOpenScreen = ScreenBaseList[nextScreenPath];
@@ -62,9 +67,24 @@ namespace Clione.Home
                 CurrentOpenScreen.SetScreenPath(nextScreenPath);
             }
 
-            yield return StartCoroutine(CurrentOpenScreen.OnBeforeOpenScreenEnumerator());
-            yield return StartCoroutine(CurrentOpenScreen.OnOpenScreenEnumerator());
-            yield return StartCoroutine(CurrentOpenScreen.OnAfterOpenScreenEnumerator());
+
+            var onBeforeOpen = CurrentOpenScreen.OnBeforeOpenScreenEnumerator();
+            while (onBeforeOpen.MoveNext())
+            {
+                yield return null;
+            }
+
+            var onOpen = CurrentOpenScreen.OnOpenScreenEnumerator();
+            while (onOpen.MoveNext())
+            {
+                yield return null;
+            }
+
+            var onAfterOpen = CurrentOpenScreen.OnAfterOpenScreenEnumerator();
+            while (onAfterOpen.MoveNext())
+            {
+                yield return null;
+            }
         }
 
         /// <summary>
@@ -97,7 +117,11 @@ namespace Clione.Home
                 yield break;
             }
 
-            yield return StartCoroutine(OnCloseScreenEnumerator());
+            var onClose = OnCloseScreenEnumerator();
+            while (onClose.MoveNext())
+            {
+                yield return null;
+            }
         }
 
         /// <summary>
@@ -115,9 +139,24 @@ namespace Clione.Home
         /// </summary>
         public IEnumerator OnCloseScreenEnumerator()
         {
-            yield return StartCoroutine(CurrentOpenScreen.OnBeforeCloseScreenEnumerator());
-            yield return StartCoroutine(CurrentOpenScreen.OnCloseScreenEnumerator());
-            yield return StartCoroutine(CurrentOpenScreen.OnAfterCloseScreenEnumerator());
+            var onBeforeClose = CurrentOpenScreen.OnBeforeCloseScreenEnumerator();
+            while (onBeforeClose.MoveNext())
+            {
+                yield return null;
+            }
+
+            var onClose = CurrentOpenScreen.OnCloseScreenEnumerator();
+            while (onClose.MoveNext())
+            {
+                yield return null;
+            }
+
+            var onAfterClose = CurrentOpenScreen.OnAfterCloseScreenEnumerator();
+            while (onAfterClose.MoveNext())
+            {
+                yield return null;
+            }
+
             CurrentOpenScreen.gameObject.SetActive(false);
         }
     }
