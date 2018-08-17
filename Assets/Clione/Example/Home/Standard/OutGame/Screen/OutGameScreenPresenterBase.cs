@@ -17,12 +17,20 @@ namespace Clione.Example
 
         public override IEnumerator OnOpenScreenEnumerator()
         {
-            yield return StartCoroutine(View.ShowEnumerator());
+            var show = View.ShowEnumerator();
+            while (show.MoveNext())
+            {
+                yield return null;
+            }
         }
 
         public override IEnumerator OnCloseScreenEnumerator()
         {
-            yield return StartCoroutine(View.HideEnumerator());
+            var hide = View.HideEnumerator();
+            while (hide.MoveNext())
+            {
+                yield return null;
+            }
         }
     }
 }

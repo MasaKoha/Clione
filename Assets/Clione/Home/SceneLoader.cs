@@ -40,19 +40,31 @@ namespace Clione.Home
         public static void LoadScreen(string screenPath, Action onComplete = null) =>
             Mono.StartCoroutine(LoadScreenEnumerator(screenPath, onComplete));
 
-        public static IEnumerator LoadSceneEnumerator(string sceneName, object param = null, Action onComplete = null, Action onFail = null)
+        private static IEnumerator LoadSceneEnumerator(string sceneName, object param = null, Action onComplete = null, Action onFail = null)
         {
-            yield return Mono.StartCoroutine(_sceneManager.LoadSceneEnumerator(sceneName, param, onComplete, onFail));
+            var loadScene = _sceneManager.LoadSceneEnumerator(sceneName, param, onComplete, onFail);
+            while (loadScene.MoveNext())
+            {
+                yield return null;
+            }
         }
 
-        public static IEnumerator LoadWindowEnumerator(string windowPath, string screenPath, Action onComplete = null)
+        private static IEnumerator LoadWindowEnumerator(string windowPath, string screenPath, Action onComplete = null)
         {
-            yield return Mono.StartCoroutine(_sceneManager.LoadWindowEnumerator(windowPath, screenPath, onComplete));
+            var loadWindow = _sceneManager.LoadWindowEnumerator(windowPath, screenPath, onComplete);
+            while (loadWindow.MoveNext())
+            {
+                yield return null;
+            }
         }
 
-        public static IEnumerator LoadScreenEnumerator(string screenPath, Action onComplete = null)
+        private static IEnumerator LoadScreenEnumerator(string screenPath, Action onComplete = null)
         {
-            yield return Mono.StartCoroutine(_sceneManager.LoadScreenEnumerator(screenPath, onComplete));
+            var loadScreen = _sceneManager.LoadScreenEnumerator(screenPath, onComplete);
+            while (loadScreen.MoveNext())
+            {
+                yield return null;
+            }
         }
     }
 }

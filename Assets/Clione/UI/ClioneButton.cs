@@ -30,38 +30,45 @@ namespace Clione.UI
                 return;
             }
 
+            // ClickDown とそれ以外は同フレームに呼ばないようにする
             if ((_eventBitCode & ButtonEventType.ClickDown) == ButtonEventType.ClickDown)
             {
                 interactable = false;
                 _eventBitCode &= ~ButtonEventType.ClickDown;
                 ButtonEvent.Invoke(ButtonEventType.ClickDown);
                 OnClickDownEvent.Invoke();
+                return;
             }
-            else if ((_eventBitCode & ButtonEventType.StartLongTap) == ButtonEventType.StartLongTap)
+
+            if ((_eventBitCode & ButtonEventType.StartLongTap) == ButtonEventType.StartLongTap)
             {
                 _eventBitCode &= ~ButtonEventType.StartLongTap;
                 ButtonEvent.Invoke(ButtonEventType.StartLongTap);
                 OnStartLongTapEvent.Invoke();
             }
-            else if ((_eventBitCode & ButtonEventType.LongTap) == ButtonEventType.LongTap)
+
+            if ((_eventBitCode & ButtonEventType.LongTap) == ButtonEventType.LongTap)
             {
                 _eventBitCode &= ~ButtonEventType.LongTap;
                 ButtonEvent.Invoke(ButtonEventType.LongTap);
                 OnLongTapEvent.Invoke();
             }
-            else if ((_eventBitCode & ButtonEventType.EndLongTap) == ButtonEventType.EndLongTap)
+
+            if ((_eventBitCode & ButtonEventType.EndLongTap) == ButtonEventType.EndLongTap)
             {
                 _eventBitCode &= ~ButtonEventType.EndLongTap;
                 ButtonEvent.Invoke(ButtonEventType.EndLongTap);
                 OnEndLongTapEvent.Invoke();
             }
-            else if ((_eventBitCode & ButtonEventType.Decide) == ButtonEventType.Decide)
+
+            if ((_eventBitCode & ButtonEventType.Decide) == ButtonEventType.Decide)
             {
                 _eventBitCode &= ~ButtonEventType.Decide;
                 ButtonEvent.Invoke(ButtonEventType.Decide);
                 OnDecideEvent.Invoke();
             }
-            else if ((_eventBitCode & ButtonEventType.ClickUp) == ButtonEventType.ClickUp)
+
+            if ((_eventBitCode & ButtonEventType.ClickUp) == ButtonEventType.ClickUp)
             {
                 interactable = true;
                 _eventBitCode &= ~ButtonEventType.ClickUp;
