@@ -5,6 +5,5 @@
         None,
         ClickDown,
         LongClick,
-        ClickUp,
     }
 }
