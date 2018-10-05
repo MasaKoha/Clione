@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Clione.ResourceLoader;
 using UnityEngine;
 
 namespace Clione.Home
@@ -52,9 +53,26 @@ namespace Clione.Home
             {
                 if (!ScreenBaseList.ContainsKey(nextScreenPath) || ScreenBaseList[nextScreenPath] == null)
                 {
-                    var prefab = Resources.Load<GameObject>(nextScreenPath);
-                    ScreenBaseList.Add(nextScreenPath, Instantiate(prefab, this.transform).GetComponent<ScreenBase>());
+                    var loaded = false;
+                    GameObject prefab = null;
+                    ClioneResourceLoader.LoadAsync<GameObject>(nextScreenPath,
+                        uiParts =>
+                        {
+                            prefab = uiParts;
+                            loaded = true;
+                        },
+                        () =>
+                        {
+                            Debug.LogError($"{nextScreenPath} is not found.");
+                            loaded = true;
+                        });
 
+                    while (!loaded)
+                    {
+                        yield return null;
+                    }
+
+                    ScreenBaseList.Add(nextScreenPath, Instantiate(prefab, this.transform).GetComponent<ScreenBase>());
                     var initialize = ScreenBaseList[nextScreenPath].InitializeEnumerator();
                     while (initialize.MoveNext())
                     {
