@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Clione.ResourceLoader;
 using UnityEngine;
 
 namespace Clione.Home
@@ -46,7 +47,25 @@ namespace Clione.Home
             {
                 if (!_windowBaseList.ContainsKey(nextWindowPath) || _windowBaseList[nextWindowPath] == null)
                 {
-                    var prefab = Resources.Load<GameObject>(nextWindowPath);
+                    var loaded = false;
+                    GameObject prefab = null;
+                    ClioneResourceLoader.LoadAsync<GameObject>(nextWindowPath,
+                        uiParts =>
+                        {
+                            prefab = uiParts;
+                            loaded = true;
+                        },
+                        () =>
+                        {
+                            Debug.LogError($"{nextWindowPath} is not found.");
+                            loaded = true;
+                        });
+
+                    while (!loaded)
+                    {
+                        yield return null;
+                    }
+
                     _windowBaseList.Add(nextWindowPath, Instantiate(prefab, _windowRootTransform).GetComponent<WindowBase>());
                     var initialize = _windowBaseList[nextWindowPath].InitializeEnumerator();
                     while (initialize.MoveNext())

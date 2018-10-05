@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Clione.Core;
 using Clione.Utility;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -12,8 +13,6 @@ namespace Clione.Home
     public class ClioneSceneManager : ISceneManager
     {
         private SceneBase _currentOpenScene = null;
-
-        private const string GameObjectName = "[Clione MainThread Dispacher]";
 
         /// <summary>
         /// 現在開かれている Scene 名
@@ -38,14 +37,6 @@ namespace Clione.Home
         private readonly MonoBehaviour _mono;
 
         public MonoBehaviour Mono => _mono;
-
-        public ClioneSceneManager()
-        {
-            var gameObject = new GameObject {name = GameObjectName};
-            Object.DontDestroyOnLoad(gameObject);
-            gameObject.AddComponent<ClioneDispatcher>();
-            _mono = gameObject.GetComponent<MonoBehaviour>();
-        }
 
         public virtual void InitializeSetUp()
         {

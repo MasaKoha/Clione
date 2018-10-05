@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Clione.Core;
 using UnityEngine;
 
 namespace Clione.Home
@@ -19,8 +20,6 @@ namespace Clione.Home
         /// </summary>
         public static string CurrentSceneName => _sceneManager.CurrentSceneName;
 
-        private static MonoBehaviour Mono => _sceneManager.Mono;
-
         /// <summary>
         /// 初期化
         /// アプリケーションの初期化時に必ず呼ぶこと
@@ -31,14 +30,20 @@ namespace Clione.Home
             _sceneManager.InitializeSetUp();
         }
 
-        public static void LoadScene(string sceneName, object param = null, Action onComplete = null, Action onFail = null) =>
-            Mono.StartCoroutine(LoadSceneEnumerator(sceneName, param, onComplete, onFail));
+        public static void LoadScene(string sceneName, object param = null, Action onComplete = null, Action onFail = null)
+        {
+            ClioneCore.Run(LoadSceneEnumerator(sceneName, param, onComplete, onFail));
+        }
 
-        public static void LoadWindow(string windowPath, string screenPath, Action onComplete = null) =>
-            Mono.StartCoroutine(LoadWindowEnumerator(windowPath, screenPath, onComplete));
+        public static void LoadWindow(string windowPath, string screenPath, Action onComplete = null)
+        {
+            ClioneCore.Run(LoadWindowEnumerator(windowPath, screenPath, onComplete));
+        }
 
-        public static void LoadScreen(string screenPath, Action onComplete = null) =>
-            Mono.StartCoroutine(LoadScreenEnumerator(screenPath, onComplete));
+        public static void LoadScreen(string screenPath, Action onComplete = null)
+        {
+            ClioneCore.Run(LoadScreenEnumerator(screenPath, onComplete));
+        }
 
         private static IEnumerator LoadSceneEnumerator(string sceneName, object param = null, Action onComplete = null, Action onFail = null)
         {
