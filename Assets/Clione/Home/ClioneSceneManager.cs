@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections;
+using Clione.Core;
 using Clione.Utility;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -12,8 +13,6 @@ namespace Clione.Home
     public class ClioneSceneManager : ISceneManager
     {
         private SceneBase _currentOpenScene = null;
-
-        private const string GameObjectName = "[Clione MainThread Dispacher]";
 
         /// <summary>
         /// 現在開かれている Scene 名
@@ -39,14 +38,6 @@ namespace Clione.Home
 
         public MonoBehaviour Mono => _mono;
 
-        public ClioneSceneManager()
-        {
-            var gameObject = new GameObject {name = GameObjectName};
-            Object.DontDestroyOnLoad(gameObject);
-            gameObject.AddComponent<ClioneDispatcher>();
-            _mono = gameObject.GetComponent<MonoBehaviour>();
-        }
-
         public virtual void InitializeSetUp()
         {
             // はじめのシーンに移る前にやっておきたい処理をここで記述する
@@ -56,7 +47,10 @@ namespace Clione.Home
         /// <summary>
         /// シーンを読み込む
         /// </summary>
-        public IEnumerator LoadSceneEnumerator(string loadSceneName, object param = null, Action onComplete = null, Action onFail = null)
+        public IEnumerator LoadSceneEnumerator(string loadSceneName,
+            object param = null,
+            Action onComplete = null,
+            Action onFail = null)
         {
             if (_isLoadingScene)
             {
@@ -69,10 +63,21 @@ namespace Clione.Home
 
             if (CurrentSceneName != loadSceneName)
             {
-                yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
+                var loadSceneAsync = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(loadSceneName);
+
+                while (!loadSceneAsync.isDone)
+                {
+                    yield return null;
+                }
+
                 Resources.UnloadUnusedAssets();
                 GC.Collect();
-                yield return _mono.StartCoroutine(InitializeSceneEnumerator(param));
+
+                var initialize = InitializeSceneEnumerator(param);
+                while (initialize.MoveNext())
+                {
+                    yield return null;
+                }
             }
 
             onComplete?.Invoke();
@@ -82,16 +87,26 @@ namespace Clione.Home
         private IEnumerator InitializeSceneEnumerator(object param)
         {
             _currentOpenScene = GetCurrentSceneBase();
-            yield return _mono.StartCoroutine(_currentOpenScene.InitializeEnumerator(param));
+            var initialize = _currentOpenScene.InitializeEnumerator(param);
+            while (initialize.MoveNext())
+            {
+                yield return null;
+            }
         }
 
         /// <summary>
         /// Window と Screen を読み込む
         /// </summary>
-        public virtual IEnumerator LoadWindowEnumerator(string loadWindowPath, string loadScreenPath,
+        public virtual IEnumerator LoadWindowEnumerator(
+            string loadWindowPath,
+            string loadScreenPath,
             Action onComplete = null)
         {
-            yield return _mono.StartCoroutine(LoadWindowAndScreenEnumerator(loadWindowPath, loadScreenPath, null, onComplete));
+            var loadWindowAndScreen = LoadWindowAndScreenEnumerator(loadWindowPath, loadScreenPath, null, onComplete);
+            while (loadWindowAndScreen.MoveNext())
+            {
+                yield return null;
+            }
         }
 
         /// <summary>
@@ -99,28 +114,54 @@ namespace Clione.Home
         /// </summary>
         public virtual IEnumerator LoadScreenEnumerator(string loadScreenPath, Action onComplete = null)
         {
-            yield return _mono.StartCoroutine(LoadWindowAndScreenEnumerator(CurrentWindowPath, loadScreenPath, null, onComplete));
+            var loadWindowAndScreen = LoadWindowAndScreenEnumerator(CurrentWindowPath, loadScreenPath, null, onComplete);
+            while (loadWindowAndScreen.MoveNext())
+            {
+                yield return null;
+            }
         }
 
         /// <summary>
         /// Scene を読み込む
         /// </summary>
-        private IEnumerator LoadWindowAndScreenEnumerator(string loadWindowPath, string loadScreenPath, object param, Action onComplete)
+        private IEnumerator LoadWindowAndScreenEnumerator(
+            string loadWindowPath,
+            string loadScreenPath,
+            object param,
+            Action onComplete)
         {
             _currentOpenScene = GetCurrentSceneBase();
 
             if (CurrentWindowPath != loadWindowPath)
             {
-                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreenEnumerator());
-                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseWindowEnumerator());
+                var onCloseScreen = _currentOpenScene.OnCloseScreenEnumerator();
+                while (onCloseScreen.MoveNext())
+                {
+                    yield return null;
+                }
+
+                var onOpenScene = _currentOpenScene.OnCloseWindowEnumerator();
+
+                while (onOpenScene.MoveNext())
+                {
+                    yield return null;
+                }
             }
 
             if (CurrentScreenPath != loadScreenPath)
             {
-                yield return _mono.StartCoroutine(_currentOpenScene.OnCloseScreenEnumerator());
+                var onCloseScreen = _currentOpenScene.OnCloseScreenEnumerator();
+                while (onCloseScreen.MoveNext())
+                {
+                    yield return null;
+                }
             }
 
-            yield return _mono.StartCoroutine(_currentOpenScene.OnOpenWindowEnumerator(loadWindowPath, loadScreenPath, CurrentWindowPath, CurrentScreenPath));
+            var onOpenWindow = _currentOpenScene.OnOpenWindowEnumerator(loadWindowPath, loadScreenPath, CurrentWindowPath, CurrentScreenPath);
+            while (onOpenWindow.MoveNext())
+            {
+                yield return null;
+            }
 
             onComplete?.Invoke();
             _isLoadingScene = false;

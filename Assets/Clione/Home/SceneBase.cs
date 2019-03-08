@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Clione.ResourceLoader;
 using UnityEngine;
 
 namespace Clione.Home
@@ -46,9 +47,31 @@ namespace Clione.Home
             {
                 if (!_windowBaseList.ContainsKey(nextWindowPath) || _windowBaseList[nextWindowPath] == null)
                 {
-                    var prefab = Resources.Load<GameObject>(nextWindowPath);
+                    var loaded = false;
+                    GameObject prefab = null;
+                    ClioneResourceLoader.LoadAsync<GameObject>(nextWindowPath,
+                        uiParts =>
+                        {
+                            prefab = uiParts;
+                            loaded = true;
+                        },
+                        () =>
+                        {
+                            Debug.LogError($"{nextWindowPath} is not found.");
+                            loaded = true;
+                        });
+
+                    while (!loaded)
+                    {
+                        yield return null;
+                    }
+
                     _windowBaseList.Add(nextWindowPath, Instantiate(prefab, _windowRootTransform).GetComponent<WindowBase>());
-                    StartCoroutine(_windowBaseList[nextWindowPath].InitializeEnumerator());
+                    var initialize = _windowBaseList[nextWindowPath].InitializeEnumerator();
+                    while (initialize.MoveNext())
+                    {
+                        yield return null;
+                    }
                 }
 
                 _currentOpenWindow = _windowBaseList[nextWindowPath].GetComponent<WindowBase>();
@@ -56,9 +79,23 @@ namespace Clione.Home
                 _currentOpenWindow.SetWindowPath(nextWindowPath);
             }
 
-            yield return StartCoroutine(_currentOpenWindow.OnBeforeOpenWindowEnumerator());
-            yield return StartCoroutine(_currentOpenWindow.OnOpenWindowEnumerator(nextScreenPath, currentScreenPath));
-            yield return StartCoroutine(_currentOpenWindow.OnAfterOpenWindowEnumerator());
+            var onBeforeOpen = _currentOpenWindow.OnBeforeOpenWindowEnumerator();
+            while (onBeforeOpen.MoveNext())
+            {
+                yield return null;
+            }
+
+            var onOpen = _currentOpenWindow.OnOpenWindowEnumerator(nextScreenPath, currentScreenPath);
+            while (onOpen.MoveNext())
+            {
+                yield return null;
+            }
+
+            var onAfterOpen = _currentOpenWindow.OnAfterOpenWindowEnumerator();
+            while (onAfterOpen.MoveNext())
+            {
+                yield return null;
+            }
         }
 
         /// <summary>
@@ -71,9 +108,24 @@ namespace Clione.Home
                 yield break;
             }
 
-            yield return StartCoroutine(_currentOpenWindow.OnBeforeCloseWindowEnumerator());
-            yield return StartCoroutine(_currentOpenWindow.OnCloseWindowEnumerator());
-            yield return StartCoroutine(_currentOpenWindow.OnAfterCloseWindowEnumerator());
+            var onBeforeClose = _currentOpenWindow.OnBeforeCloseWindowEnumerator();
+            while (onBeforeClose.MoveNext())
+            {
+                yield return null;
+            }
+
+            var onClose = _currentOpenWindow.OnCloseWindowEnumerator();
+            while (onClose.MoveNext())
+            {
+                yield return null;
+            }
+
+            var onAfterClose = _currentOpenWindow.OnAfterCloseWindowEnumerator();
+            while (onAfterClose.MoveNext())
+            {
+                yield return null;
+            }
+
             _currentOpenWindow.gameObject.SetActive(false);
             _currentOpenWindow = null;
         }
@@ -93,7 +145,11 @@ namespace Clione.Home
                 yield break;
             }
 
-            yield return StartCoroutine(_currentOpenWindow.OnCloseScreenEnumerator());
+            var onClose = _currentOpenWindow.OnCloseScreenEnumerator();
+            while (onClose.MoveNext())
+            {
+                yield return null;
+            }
         }
     }
 }

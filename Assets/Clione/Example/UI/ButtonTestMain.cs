@@ -12,7 +12,7 @@ namespace Clione.Example
         // Use this for initialization
         private void Start()
         {
-            _button.ButtonEvent.AddListener(state => { Debug.Log($"{state.ToString()} : {Time.frameCount}"); });
+            _button.onClick.AddListener(() => { Debug.Log($"Click : {Time.frameCount}"); });
         }
     }
 }

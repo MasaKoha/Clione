@@ -1,136 +1,105 @@
-﻿using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using System.Collections;
+using UnityEngine.UI;
+using UnityEngine;
 
 namespace Clione.UI
 {
-    public abstract class ClioneButtonBase : UnityEngine.UI.Button
+    public abstract class ClioneButtonBase : Button
     {
         private ButtonState _clickState = ButtonState.None;
 
-        private float _startLongTapDuration = 0.5f;
+        private float _longClickTimeDuration = 0.5f;
 
-        private float _longTapTime;
-
-        private bool _longTapFirstFrame = true;
-
-        private bool _isDetermining = false;
-
-        public void SetStartLongTapDuration(float duration)
+        protected void SetLongTapTimer(float longClickDuration)
         {
-            _startLongTapDuration = duration;
+            _longClickTimeDuration = longClickDuration;
         }
 
-        public override void OnPointerExit(PointerEventData eventData)
+        protected override void DoStateTransition(SelectionState state, bool instant)
         {
-            base.OnPointerExit(eventData);
-
-            _longTapTime = 0;
-            _longTapFirstFrame = true;
-            _isDetermining = false;
-            if (_clickState == ButtonState.None)
+            switch (state)
             {
-                return;
-            }
-
-            if (_clickState == ButtonState.ClickDown)
-            {
-                OnClickUp();
-                _clickState = ButtonState.None;
-                return;
-            }
-
-            if (_clickState == ButtonState.LongClick)
-            {
-                OnEndLongTap();
-                OnClickUp();
-            }
-
-            _clickState = ButtonState.ClickUp;
-        }
-
-        public override void OnPointerDown(PointerEventData eventData)
-        {
-            base.OnPointerDown(eventData);
-
-            if (!interactable)
-            {
-                return;
-            }
-
-            _clickState = ButtonState.ClickDown;
-            _isDetermining = true;
-            OnClickDown();
-        }
-
-        public override void OnPointerUp(PointerEventData eventData)
-        {
-            base.OnPointerUp(eventData);
-
-            if (_clickState == ButtonState.LongClick)
-            {
-                OnEndLongTap();
-            }
-
-            if (_clickState != ButtonState.None)
-            {
-                _longTapTime = 0;
-                _clickState = ButtonState.None;
-                OnClickUp();
-            }
-
-            if (_isDetermining)
-            {
-                _isDetermining = false;
-                OnDecide();
+                case Selectable.SelectionState.Highlighted:
+                    ChangeState(ClickEvent.Release);
+                    break;
+                case SelectionState.Normal:
+                    ChangeState(ClickEvent.Release);
+                    break;
+                case Selectable.SelectionState.Pressed:
+                    ChangeState(ClickEvent.Click);
+                    break;
             }
         }
 
-        protected void Update()
+        private enum ClickEvent
         {
-            if (_clickState == ButtonState.None)
+            None,
+            Click,
+            Release,
+        }
+
+        private void ChangeState(ClickEvent clickEvent)
+        {
+            switch (_clickState)
             {
-                return;
+                case ButtonState.None:
+                    switch (clickEvent)
+                    {
+                        case ClickEvent.Click:
+                            _clickState = ButtonState.ClickDown;
+                            OnClickDown();
+                            StartCoroutine(LongClickEnumerator());
+                            break;
+                    }
+
+                    break;
+                case ButtonState.ClickDown:
+
+                    switch (clickEvent)
+                    {
+                        case ClickEvent.Release:
+                            _clickState = ButtonState.None;
+                            OnClickUp();
+                            break;
+                    }
+
+                    break;
+                case ButtonState.LongClick:
+                    switch (clickEvent)
+                    {
+                        case ClickEvent.Release:
+                            _clickState = ButtonState.None;
+                            OnClickUp();
+                            break;
+                    }
+
+                    break;
             }
+        }
 
-            if (_clickState == ButtonState.ClickUp)
+        private IEnumerator LongClickEnumerator()
+        {
+            float clickTime = 0;
+
+            while (clickTime < _longClickTimeDuration)
             {
-                _clickState = ButtonState.None;
-                return;
-            }
-
-            _longTapTime += Time.deltaTime;
-
-            if (_longTapTime > _startLongTapDuration)
-            {
-                if (_clickState == ButtonState.ClickUp)
+                if (_clickState == ButtonState.None)
                 {
-                    OnEndLongTap();
-                    _longTapTime = 0;
+                    yield break;
                 }
 
-                if (_longTapFirstFrame)
-                {
-                    OnStartLongTap();
-                    _longTapFirstFrame = false;
-                    _clickState = ButtonState.LongClick;
-                }
-                else
-                {
-                    OnLongTap();
-                }
+                clickTime += Time.deltaTime;
+                yield return null;
             }
+
+            _clickState = ButtonState.LongClick;
+            OnLongClick();
         }
 
         protected abstract void OnClickDown();
 
         protected abstract void OnClickUp();
 
-        protected abstract void OnDecide();
-
-        protected abstract void OnStartLongTap();
-
-        protected abstract void OnLongTap();
-
-        protected abstract void OnEndLongTap();
+        protected abstract void OnLongClick();
     }
 }
